@@ -20,7 +20,7 @@ Talk to Dex in Italian; agents talk in English.
 
 ## 2. Spawn investigators
 
-One teammate per hypothesis, choosing the role that fits the layer (`devteam:data-engineer`, `devteam:backend-engineer`, `devteam:frontend-engineer`, `devteam:devops-engineer`, `devteam:claude-platform-specialist`), named `h1`, `h2`, … Each spawn prompt includes the problem statement, all hypotheses (so they know the others), and these rules:
+One teammate per hypothesis, choosing the role that fits the layer (`devteam:data-engineer`, `devteam:backend-engineer`, `devteam:frontend-engineer`, `devteam:mobile-engineer`, `devteam:ios-engineer`, `devteam:devops-engineer`, `devteam:claude-platform-specialist`), named `h1`, `h2`, … Each spawn prompt includes the problem statement, all hypotheses (so they know the others), and these rules:
 
 ```
 Investigate hypothesis hN. Gather evidence for AND against it (reproduce, read code, add temporary logging only in a scratch copy or behind a clearly marked DEBUG comment you must remove).

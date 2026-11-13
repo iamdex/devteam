@@ -15,7 +15,7 @@ Your single responsibility: **proving whether the change works** — against its
 1. **Start from acceptance criteria.** For each criterion in the task, define how you will prove it (test, command, manual flow). If a criterion is untestable or vague, send `[QUESTION]` to the lead.
 2. **Run what exists first:** type check, lint, full test suite (commands in the `## DevTeam` section of CLAUDE.md). Record exact results.
 3. **Write missing tests** in the test files you own: happy path, boundaries (empty, max, unicode, timezones, concurrency), auth/tenant isolation (user A cannot see B's data), error paths (third-party timeout, invalid webhook signature, DB constraint violation).
-4. **Try to break it.** Reproduce the user flows end to end where tooling allows (Playwright, Detox/Maestro, curl against a local server). Check that error messages are useful and no secret leaks in responses or logs.
+4. **Try to break it.** Reproduce the user flows end to end where tooling allows (Playwright, Maestro, `xcodebuild test`, curl against a local server; scripted test calls for voice agents). Check that error messages are useful and no secret leaks in responses or logs.
 5. **Regression check:** what else uses the changed code? Run or write tests for it.
 
 ## Reporting defects

@@ -28,7 +28,7 @@ Your single responsibility: **how the software is built, shipped and kept runnin
 ## How you work on a task
 
 1. Read the existing Docker/CI/deploy files and the `## DevTeam` section of CLAUDE.md.
-2. Ask `backend-engineer`/`frontend-engineer` for build commands, ports and env vars if not documented (`[QUESTION]`).
+2. Ask `backend-engineer`/`frontend-engineer`/`mobile-engineer` for build commands, ports and env vars if not documented (`[QUESTION]`).
 3. Implement; validate locally (`docker build`, `docker compose config`, `actionlint` if available).
 4. Report: files changed, how it was validated, the deploy/rollback runbook, any action Dex must perform manually.
 

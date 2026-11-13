@@ -6,7 +6,7 @@
 - Runtime/language: <e.g. Node 22 + TypeScript 5 (strict)>
 - Backend: <framework>, validation: <zod/...>
 - Data: <Supabase (Postgres + pgvector) / EF Core + Postgres / ...>
-- Client: <Expo SDK xx + Expo Router / Next.js xx / none>
+- Client: <Next.js xx / Expo SDK xx + Expo Router / SwiftUI (iOS xx, macOS xx) / none>
 - Deploy: <Docker → Dokploy on VPS / ...>
 - Package manager: <pnpm/npm/...> (never mix)
 
@@ -31,12 +31,16 @@
 ### Ownership map
 | Path / glob | Owner |
 | --- | --- |
+| `docs/product/**` | product |
 | `docs/design/**` | architect |
 | `apps/api/**`, `src/server/**` | backend |
 | `supabase/migrations/**`, `supabase/seed.sql` | data |
-| `apps/mobile/**`, `apps/web/**` | frontend |
+| `apps/web/**` | frontend |
+| `apps/mobile/**` | mobile |
+| `apps/ios/**`, `modules/*/ios/**` | ios |
 | `Dockerfile*`, `docker-compose*.yml`, `.github/workflows/**` | devops |
 | `**/*.test.ts`, `e2e/**` | qa |
+| `docs/gtm/**`, marketing copy | growth |
 
 ### Sensitive areas (always get a security review)
 - <auth, payments/webhooks, tenant isolation, LLM prompts & tools, ...>

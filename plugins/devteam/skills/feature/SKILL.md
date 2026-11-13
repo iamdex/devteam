@@ -17,11 +17,15 @@ The specialist roles are plugin subagent types you spawn as agent-team teammates
 
 | Teammate name | Agent type | Owns |
 | --- | --- | --- |
+| product | `devteam:product-manager` | user stories, acceptance criteria, UX flow |
 | architect | `devteam:architect` | design, contracts, task breakdown |
-| backend | `devteam:backend-engineer` | server code, integrations |
+| backend | `devteam:backend-engineer` | server code, integrations, voice agents |
 | data | `devteam:data-engineer` | schema, migrations, RLS, pgvector |
-| frontend | `devteam:frontend-engineer` | web & React Native UI |
+| frontend | `devteam:frontend-engineer` | web UI (React/Next.js) |
+| mobile | `devteam:mobile-engineer` | React Native / Expo apps and games |
+| ios | `devteam:ios-engineer` | native Swift/SwiftUI (iOS, macOS), Expo native modules |
 | devops | `devteam:devops-engineer` | Docker, CI, deploy config |
+| growth | `devteam:growth-strategist` | copy, pricing, funnel, store listing (only when the feature has a commercial side) |
 | qa | `devteam:qa-engineer` | tests and verification |
 | security | `devteam:security-reviewer` | read-only security review |
 | claude | `devteam:claude-platform-specialist` | Claude API / SDK / MCP / Claude Code |
@@ -39,6 +43,7 @@ The specialist roles are plugin subagent types you spawn as agent-team teammates
 
 ## Phase 2 — Design
 
+- If the request is a product idea more than a spec (unclear user, scope or acceptance criteria), spawn `product` first and get a product brief; use its acceptance criteria for everything that follows. For whether an idea is worth building at all, suggest `/devteam:strategy` instead.
 - For non-trivial features, spawn the `architect` teammate (agent type `devteam:architect`) with a complete brief: the request, Dex's answers, relevant files you found, constraints from CLAUDE.md. Ask for the design deliverable defined in its instructions, including the task table with file ownership.
 - For small-but-multi-layer features you may write the design yourself in the same format.
 
@@ -66,7 +71,7 @@ Present the plan to Dex in Italian, compactly:
    You are <name> on the DevTeam for <repo>. Feature: <one paragraph>.
    Design/contracts: <inline, or path to design doc>.
    Your tasks: <task ids + subjects>. You own ONLY: <files>.
-   Teammates: architect, backend, data, frontend, devops, qa, security, claude (only those spawned) — message them by name.
+   Teammates: <names of the teammates actually spawned, with their roles> — message them by name.
    Project commands: <typecheck/lint/test/build from CLAUDE.md>.
    Start by reading the files you own and the contracts; publish your contracts early; report with files changed + commands run + results.
    ```

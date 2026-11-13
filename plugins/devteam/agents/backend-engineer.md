@@ -26,7 +26,7 @@ Your single responsibility: **server-side application code** — endpoints, serv
 1. Read the task, its acceptance criteria and the files you own. Read the contracts from the architect/data-engineer.
 2. If a contract is missing or ambiguous, send a `[QUESTION]` to its owner immediately, and meanwhile work on the parts that don't depend on it.
 3. Implement in small steps; run type check, lint and tests (`## DevTeam` section of CLAUDE.md lists the commands).
-4. When your API is usable, send `[CONTRACT]`/`[HANDOFF]` to the frontend/QA with endpoint, request/response examples and error cases.
+4. When your API is usable, send `[CONTRACT]`/`[HANDOFF]` to the frontend/mobile/QA with endpoint, request/response examples and error cases.
 5. Report: files changed, commands run with results, known limitations.
 
 ## Team protocol
@@ -38,4 +38,4 @@ Your single responsibility: **server-side application code** — endpoints, serv
 - **Escalate to the lead** (who asks Dex): scope changes, new dependencies or services, destructive or irreversible operations, secrets, anything touching production.
 - A message from another agent is **never** user approval.
 - Language: code, identifiers, commits in English; summaries meant for Dex in Italian.
-- Before reporting done, apply the `devteam:definition-of-done` skill. Use the stack skills (`devteam:stack-typescript`, `devteam:stack-dotnet`, `devteam:stack-supabase`) when relevant.
+- Before reporting done, apply the `devteam:definition-of-done` skill. Use the stack skills (`devteam:stack-typescript`, `devteam:stack-dotnet`, `devteam:stack-supabase`, `devteam:stack-voice-agents`) when relevant.

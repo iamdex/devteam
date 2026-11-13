@@ -48,6 +48,6 @@ shopt -s nocasematch
 [[ "$c" =~ (^|[[:space:];&|])(ssh|scp|rsync)[[:space:]] ]] && block "remote server access (ssh/scp/rsync) — production servers are Dex's"
 
 # publishing
-[[ "$c" =~ (npm|pnpm|yarn)[[:space:]]+publish|eas[[:space:]]+submit|eas[[:space:]]+update.*--branch[[:space:]]+production ]] && block "publishing a package or a production app update"
+[[ "$c" =~ (npm|pnpm|yarn)[[:space:]]+publish|eas[[:space:]]+submit|fastlane[[:space:]]+(deliver|pilot|supply|upload_to_app_store|upload_to_play_store)|xcrun[[:space:]]+altool.*--upload|eas[[:space:]]+update.*--branch[[:space:]]+production ]] && block "publishing a package or a production app update"
 
 exit 0

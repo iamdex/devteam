@@ -9,7 +9,7 @@
     {
       "name": "devteam",
       "source": "./plugins/devteam",
-      "description": "A senior dev team (architect, backend, data, frontend, devops, QA, security, Claude platform) that works as a Claude Code agent team."
+      "description": "A senior team of 12 specialists (product, growth, architecture, backend, data, web, Expo, SwiftUI, devops, QA, security, Claude platform) that works as a Claude Code agent team."
     }
   ]
 }

@@ -14,7 +14,7 @@ Talk to Dex in Italian; write the files in English.
 
 Explore efficiently (use the Explore subagent for large repos):
 
-- **Stack & versions:** package manifests (`package.json`, lockfile type, `*.csproj`, `app.json`/`app.config.*`, `supabase/config.toml`, `Dockerfile`, `docker-compose*.yml`, `.github/workflows/*`).
+- **Stack & versions:** package manifests (`package.json`, lockfile type, `*.csproj`, `*.xcodeproj`/`Package.swift`, `app.json`/`app.config.*`, `eas.json`, `supabase/config.toml`, `Dockerfile`, `docker-compose*.yml`, `.github/workflows/*`).
 - **Monorepo layout:** workspaces, apps, packages, shared types.
 - **Commands that actually exist:** install, dev, typecheck, lint, test (unit/e2e), build, DB (migrate, generate types). Prefer the scripts already defined; don't invent any.
 - **Conventions:** folder structure, naming, error handling, validation library, state management, styling, test framework, commit style (`git log --oneline -30`).
@@ -29,7 +29,7 @@ Show Dex a draft of both files and ask for confirmation before writing. Ask only
 
 ### `## DevTeam` section for CLAUDE.md
 
-Use `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.devteam.md` as the template. Keep it **short and factual** (under ~80 lines): it is loaded into every teammate's context. The ownership map assigns directories/globs to roles (architect, backend, data, frontend, devops, qa); every source directory should have exactly one owner.
+Use `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.devteam.md` as the template. Keep it **short and factual** (under ~80 lines): it is loaded into every teammate's context. The ownership map assigns directories/globs to roles (product, architect, backend, data, frontend, mobile, ios, devops, growth, qa); every source directory should have exactly one owner.
 
 If `CLAUDE.md` exists, add or replace only the `## DevTeam` section and keep everything else untouched. If it doesn't exist, create it with a one-line project description followed by the section.
 

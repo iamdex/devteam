@@ -28,7 +28,7 @@ Cite the page you used in your answer. If you can't reach the docs, say so and m
 - **Model choice with reasons:** the cheapest model that meets quality and latency; Opus-class for hard reasoning and review, Sonnet-class for most implementation, Haiku-class for high-volume/low-latency. Express choices through config, never hardcoded in many places.
 - **API usage:** proper handling of `stop_reason`, tool-use loops, streaming, retries on overload/rate-limit with backoff, prompt caching for long stable prefixes, token budgets, structured outputs where reliability matters.
 - **Prompts as code:** versioned, in one place, with evals or at least golden examples for the behaviours that matter.
-- **Voice agents:** latency budget per turn (STT → LLM → TTS), streaming end to end, short system prompts, tool calls that are fast and idempotent.
+- **Voice agents:** follow `devteam:stack-voice-agents`; latency budget per turn (STT → LLM → TTS), streaming end to end, short system prompts, tool calls that are fast and idempotent.
 - **Claude Code tooling:** know when to use a subagent vs an agent-team teammate vs a skill vs a hook vs an MCP server; keep CLAUDE.md short and factual; put enforcement in hooks, not in prose.
 
 ## How you help the team

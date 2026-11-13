@@ -9,10 +9,14 @@ Il team è generico e riusabile su tutti i progetti. Il contesto specifico di og
 | Teammate | Agente | Modello | Responsabilità unica |
 | --- | --- | --- | --- |
 | *lead* | sessione principale | quello che usi (consigliato Opus) | coordina, ti chiede l'ok, sintetizza |
+| `product` | `devteam:product-manager` | Opus | utente e problema, MVP, user story con criteri di accettazione, flusso UX, metriche |
+| `growth` | `devteam:growth-strategist` | Opus | posizionamento, prezzi, go-to-market, funnel, copy, vendita alle PMI, ASO |
 | `architect` | `devteam:architect` | Opus | design, contratti tra layer, task con ownership dei file |
-| `backend` | `devteam:backend-engineer` | Sonnet | API, logica, integrazioni (TS/Node, .NET) |
+| `backend` | `devteam:backend-engineer` | Sonnet | API, logica, integrazioni, voice agent (TS/Node, .NET) |
 | `data` | `devteam:data-engineer` | Sonnet | schema, migrazioni, RLS, pgvector, performance query |
-| `frontend` | `devteam:frontend-engineer` | Sonnet | React web, React Native/Expo, UI dei giochi |
+| `frontend` | `devteam:frontend-engineer` | Sonnet | web: React, Next.js, landing, dashboard, SEO |
+| `mobile` | `devteam:mobile-engineer` | Sonnet | Expo/React Native: app e giochi, EAS, push, acquisti in-app |
+| `ios` | `devteam:ios-engineer` | Sonnet | Swift/SwiftUI nativo iOS e macOS, StoreKit 2, moduli nativi per Expo |
 | `devops` | `devteam:devops-engineer` | Sonnet | Docker, Dokploy, CI, env, backup — prepara, non esegue in prod |
 | `qa` | `devteam:qa-engineer` | Opus | test, edge case, verdetto PASS/FAIL con evidenze |
 | `security` | `devteam:security-reviewer` | Opus | review di sicurezza read-only (anche OWASP LLM) |
@@ -29,6 +33,7 @@ Il modello di ogni ruolo è nel frontmatter del file in `plugins/devteam/agents/
 | `/devteam:feature <descrizione>` | il flusso completo: design → **tua approvazione** → build in parallelo → QA/security → riepilogo |
 | `/devteam:review [branch\|PR]` | review parallela (security + QA + architettura) con verifica incrociata dei finding |
 | `/devteam:debug <bug>` | indagine a ipotesi concorrenti: ogni investigatore prova a smontare le teorie degli altri |
+| `/devteam:strategy <idea>` | product + growth + architect valutano un'idea: MVP, prezzo, go-to-market, fattibilità e costi → vai / non ora |
 
 Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:security-reviewer per controllare src/auth".
 
@@ -47,7 +52,7 @@ Requisiti: Claude Code recente (agent teams da v2.1.32; testato con 2.1.325), `j
 
 ## Come lavora (`/devteam:feature`)
 
-1. **Capire e dimensionare** — se il lavoro è piccolo il lead te lo dice e lo fa da solo: un team costa più token.
+1. **Capire e dimensionare** — se il lavoro è piccolo il lead te lo dice e lo fa da solo: un team costa più token. Se la richiesta è più un'idea che una specifica, `product` scrive prima il brief con i criteri di accettazione.
 2. **Design** — `architect` produce approccio, contratti (API, tipi, schema, env) e task con file assegnati.
 3. **Approvazione** — il lead ti presenta piano, team, task, rischi. **Non parte niente senza il tuo ok.**
 4. **Build** — i teammate lavorano in parallelo, si scambiano `[CONTRACT]`, `[QUESTION]`, `[BLOCKER]`, `[HANDOFF]`; `qa` scrive i test sui contratti mentre gli altri implementano.
@@ -60,7 +65,7 @@ Puoi parlare con qualsiasi teammate direttamente: ↑/↓ nel pannello agenti, I
 
 - **TaskCreated** — dentro un team, ogni task deve avere `Owner:`, `Files:` e `Acceptance:` nella descrizione (i task di review/plan/research solo `Owner:`). È ciò che evita due agenti sullo stesso file.
 - **TaskCompleted** — prima che un task di implementazione venga chiuso, esegue i `checks` di `.claude/devteam.json` (typecheck, lint, unit test). Se falliscono, il task resta aperto e l'agente riceve l'output dell'errore.
-- **PreToolUse (Bash)** — blocca comandi irreversibili o da produzione e chiede di passare da te: force push, `git reset --hard`, `git clean -f`, `git stash`, `git checkout -- .` (cancellerebbero il lavoro non committato degli altri teammate), `rm -rf` su root/home/wildcard, `supabase db push`, reset di DB remoti, `DROP DATABASE`, cancellazione volumi Docker, `ssh`/`scp`/`rsync`, `npm publish`, `eas submit`.
+- **PreToolUse (Bash)** — blocca comandi irreversibili o da produzione e chiede di passare da te: force push, `git reset --hard`, `git clean -f`, `git stash`, `git checkout -- .` (cancellerebbero il lavoro non committato degli altri teammate), `rm -rf` su root/home/wildcard, `supabase db push`, reset di DB remoti, `DROP DATABASE`, cancellazione volumi Docker, `ssh`/`scp`/`rsync`, `npm publish`, `eas submit`, `fastlane deliver`/`pilot`/`supply`, upload con `xcrun altool`.
 
 Il guardrail vale per tutte le sessioni in cui il plugin è attivo. Si disattiva per progetto con `"guard": false` in `.claude/devteam.json`, o per sessione con la variabile `DEVTEAM_GUARD=0`.
 
@@ -87,6 +92,7 @@ Nel gate metti solo controlli veloci e affidabili; i test e2e li lancia `qa`. Se
 - Ogni teammate è una sessione Claude completa: i token crescono con il numero di teammate. 3–5 teammate per feature è il punto giusto.
 - Gli agent teams sono **sperimentali**: `/resume` non ripristina i teammate in-process, lo stato dei task a volte resta indietro, un solo team per sessione, i teammate non possono creare altri teammate.
 - Funzionano solo in sessioni **interattive** (non con `claude -p` / Agent SDK). Per un team autonomo sul server servirà un'architettura diversa (v2).
+- Non tutti i ruoli servono sempre: il lead attiva solo quelli con un task (di solito 3–5). `growth` entra nelle feature solo se c'è un lato commerciale (copy, pricing, store).
 - I teammate non vedono la conversazione del lead: per questo il lead scrive brief completi e il contesto stabile sta in `CLAUDE.md`.
 - Mentre gli agent teams sono attivi, i subagent a cui Claude dà un nome partono come teammate.
 
@@ -96,11 +102,12 @@ Nel gate metti solo controlli veloci e affidabili; i test e2e li lancia `qa`. Se
 .claude-plugin/marketplace.json     marketplace "espertini-devteam"
 plugins/devteam/
   .claude-plugin/plugin.json
-  agents/        8 ruoli senior (prompt, modello, tool)
-  skills/        comandi (feature, review, debug, onboard, setup)
+  agents/        12 ruoli senior (prompt, modello, tool)
+  skills/        comandi (feature, review, debug, strategy, onboard, setup)
                  + conoscenza (definition-of-done, code-review-checklist,
                    stack-typescript, stack-dotnet, stack-supabase,
-                   stack-react-native, stack-docker-dokploy)
+                   stack-react-web, stack-expo, stack-swiftui,
+                   stack-voice-agents, stack-docker-dokploy)
   hooks/hooks.json
   scripts/       hook (bash + jq/python3/node)
   templates/     CLAUDE.devteam.md, devteam.json

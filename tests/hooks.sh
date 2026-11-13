@@ -8,9 +8,9 @@ for B in jq python3 node; do
 export DEVTEAM_JSON_BACKEND=$B CLAUDE_PROJECT_DIR=$P
 # --- guard
 g() { printf '{"tool_input":{"command":%s}}' "$(printf '%s' "$1" | jq -Rs .)" | $S/guard-bash.sh 2>/dev/null; echo $?; }
-for c in "git push --force origin main" "git push -f" "git push origin +main" "git reset --hard HEAD~1" "git clean -fd" "git checkout -- ." "git restore ." "git stash" "git stash push -m x" "rm -rf /" "rm -rf ~" "rm -rf \$HOME" "rm -rf ../" "rm -rf *" "rm -fr /" "supabase db push" "supabase db reset --linked" "psql -c 'DROP DATABASE app'" "psql -c 'drop schema public cascade'" "npx prisma migrate reset" "docker volume rm x" "docker system prune -a -f" "docker compose down -v" "ssh root@1.2.3.4" "npm publish" "git branch -D feat"; do
+for c in "git push --force origin main" "git push -f" "git push origin +main" "git reset --hard HEAD~1" "git clean -fd" "git checkout -- ." "git restore ." "git stash" "git stash push -m x" "rm -rf /" "rm -rf ~" "rm -rf \$HOME" "rm -rf ../" "rm -rf *" "rm -fr /" "supabase db push" "supabase db reset --linked" "psql -c 'DROP DATABASE app'" "psql -c 'drop schema public cascade'" "npx prisma migrate reset" "docker volume rm x" "docker system prune -a -f" "docker compose down -v" "ssh root@1.2.3.4" "npm publish" "git branch -D feat" "fastlane deliver" "eas submit -p ios" "xcrun altool --upload-app -f a.ipa"; do
   expect "block: $c" 2 $(g "$c"); done
-for c in "git push origin feature" "git status" "git stash list" "git checkout -b feat" "git checkout main" "rm -rf node_modules" "rm -rf ./dist" "supabase db reset" "supabase migration new x" "docker compose up -d" "docker compose down" "npm test" "ssh-keygen -t ed25519" "git branch -d merged" "echo drop table" "pnpm install"; do
+for c in "git push origin feature" "git status" "git stash list" "git checkout -b feat" "git checkout main" "rm -rf node_modules" "rm -rf ./dist" "supabase db reset" "supabase migration new x" "docker compose up -d" "docker compose down" "npm test" "ssh-keygen -t ed25519" "git branch -d merged" "echo drop table" "pnpm install" "fastlane test" "xcodebuild test -scheme App"; do
   expect "allow: $c" 0 $(g "$c"); done
 # guard disabled via config
 echo '{"guard": false}' > $P/.claude/devteam.json
