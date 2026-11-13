@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "TaskCreated": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/task-created.sh", "timeout": 30 }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/task-completed.sh", "timeout": 900 }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/guard-bash.sh", "timeout": 15 }
+        ]
+      }
+    ]
+  }
+}

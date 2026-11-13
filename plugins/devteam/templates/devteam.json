@@ -1,0 +1,11 @@
+{
+  "gateTasks": true,
+  "requireTaskOwnership": true,
+  "checkTimeoutSeconds": 600,
+  "skipGatePattern": "^(review|plan|design|research|investigate|analy[sz]e|verify|document|explore)\\b",
+  "checks": [
+    { "name": "typecheck", "run": "pnpm typecheck" },
+    { "name": "lint", "run": "pnpm lint" },
+    { "name": "unit tests", "run": "pnpm test" }
+  ]
+}

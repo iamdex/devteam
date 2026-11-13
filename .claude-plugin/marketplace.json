@@ -1,0 +1,15 @@
+{
+  "name": "espertini-devteam",
+  "description": "Dex's senior development team made of Claude Code agents",
+  "owner": {
+    "name": "Davide Espertini",
+    "url": "https://espertini.com"
+  },
+  "plugins": [
+    {
+      "name": "devteam",
+      "source": "./plugins/devteam",
+      "description": "A senior dev team (architect, backend, data, frontend, devops, QA, security, Claude platform) that works as a Claude Code agent team."
+    }
+  ]
+}
