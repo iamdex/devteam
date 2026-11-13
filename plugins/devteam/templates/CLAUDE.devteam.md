@@ -41,6 +41,7 @@
 | `Dockerfile*`, `docker-compose*.yml`, `.github/workflows/**` | devops |
 | `**/*.test.ts`, `e2e/**` | qa |
 | `docs/gtm/**`, marketing copy | growth |
+| `store/**`, `fastlane/metadata/**`, `docs/release/**` | store |
 
 ### Sensitive areas (always get a security review)
 - <auth, payments/webhooks, tenant isolation, LLM prompts & tools, ...>

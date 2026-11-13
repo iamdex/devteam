@@ -18,6 +18,7 @@ Il team è generico e riusabile su tutti i progetti. Il contesto specifico di og
 | `mobile` | `devteam:mobile-engineer` | Sonnet | Expo/React Native: app e giochi, EAS, push, acquisti in-app |
 | `ios` | `devteam:ios-engineer` | Sonnet | Swift/SwiftUI nativo iOS e macOS, StoreKit 2, moduli nativi per Expo |
 | `devops` | `devteam:devops-engineer` | Sonnet | Docker, Dokploy, CI, env, backup — prepara, non esegue in prod |
+| `store` | `devteam:store-release-manager` | Sonnet | App Store Connect e Play Console: listing, privacy label/Data safety, IAP, TestFlight/track di test, review e rifiuti, rollout |
 | `qa` | `devteam:qa-engineer` | Opus | test, edge case, verdetto PASS/FAIL con evidenze |
 | `security` | `devteam:security-reviewer` | Opus | review di sicurezza read-only (anche OWASP LLM) |
 | `claude` | `devteam:claude-platform-specialist` | Sonnet | Claude API, Agent SDK, MCP, Claude Code — verifica sempre sulla doc attuale |
@@ -33,6 +34,7 @@ Il modello di ogni ruolo è nel frontmatter del file in `plugins/devteam/agents/
 | `/devteam:feature <descrizione>` | il flusso completo: design → **tua approvazione** → build in parallelo → QA/security → riepilogo |
 | `/devteam:review [branch\|PR]` | review parallela (security + QA + architettura) con verifica incrociata dei finding |
 | `/devteam:debug <bug>` | indagine a ipotesi concorrenti: ogni investigatore prova a smontare le teorie degli altri |
+| `/devteam:release <app versione>` | prepara il rilascio sugli store: readiness, listing, privacy, test, rollout → checklist di invio per te |
 | `/devteam:strategy <idea>` | product + growth + architect valutano un'idea: MVP, prezzo, go-to-market, fattibilità e costi → vai / non ora |
 
 Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:security-reviewer per controllare src/auth".
@@ -102,8 +104,8 @@ Nel gate metti solo controlli veloci e affidabili; i test e2e li lancia `qa`. Se
 .claude-plugin/marketplace.json     marketplace "espertini-devteam"
 plugins/devteam/
   .claude-plugin/plugin.json
-  agents/        12 ruoli senior (prompt, modello, tool)
-  skills/        comandi (feature, review, debug, strategy, onboard, setup)
+  agents/        13 ruoli senior (prompt, modello, tool)
+  skills/        comandi (feature, review, debug, strategy, release, onboard, setup)
                  + conoscenza (definition-of-done, code-review-checklist,
                    stack-typescript, stack-dotnet, stack-supabase,
                    stack-react-web, stack-expo, stack-swiftui,

@@ -1,7 +1,7 @@
 {
   "name": "devteam",
   "displayName": "DevTeam",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A senior development team of specialized agents that talk to each other through Claude Code agent teams. Reusable across projects: project specifics live in each repo's CLAUDE.md and .claude/devteam.json.",
   "author": {
     "name": "Davide Espertini",

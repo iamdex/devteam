@@ -25,6 +25,7 @@ The specialist roles are plugin subagent types you spawn as agent-team teammates
 | mobile | `devteam:mobile-engineer` | React Native / Expo apps and games |
 | ios | `devteam:ios-engineer` | native Swift/SwiftUI (iOS, macOS), Expo native modules |
 | devops | `devteam:devops-engineer` | Docker, CI, deploy config |
+| store | `devteam:store-release-manager` | App Store / Google Play readiness, listings, review compliance |
 | growth | `devteam:growth-strategist` | copy, pricing, funnel, store listing (only when the feature has a commercial side) |
 | qa | `devteam:qa-engineer` | tests and verification |
 | security | `devteam:security-reviewer` | read-only security review |

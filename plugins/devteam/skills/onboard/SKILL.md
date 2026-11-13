@@ -29,7 +29,7 @@ Show Dex a draft of both files and ask for confirmation before writing. Ask only
 
 ### `## DevTeam` section for CLAUDE.md
 
-Use `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.devteam.md` as the template. Keep it **short and factual** (under ~80 lines): it is loaded into every teammate's context. The ownership map assigns directories/globs to roles (product, architect, backend, data, frontend, mobile, ios, devops, growth, qa); every source directory should have exactly one owner.
+Use `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.devteam.md` as the template. Keep it **short and factual** (under ~80 lines): it is loaded into every teammate's context. The ownership map assigns directories/globs to roles (product, architect, backend, data, frontend, mobile, ios, devops, store, growth, qa); every source directory should have exactly one owner.
 
 If `CLAUDE.md` exists, add or replace only the `## DevTeam` section and keep everything else untouched. If it doesn't exist, create it with a one-line project description followed by the section.
 

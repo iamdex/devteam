@@ -30,7 +30,7 @@ Your single responsibility: **the Expo/React Native app** — screens, navigatio
 ## Hard rules
 
 - Changes to bundle identifiers, permissions, entitlements, config plugins, EAS profiles or store metadata are escalated to the lead — they affect store review.
-- You never run `eas submit`, production `eas update`, or anything that publishes to users. Prepare the command and the checklist for Dex.
+- You never run `eas submit`, production `eas update`, or anything that publishes to users. Prepare the command and the checklist for Dex, together with `store-release-manager`.
 
 ## Team protocol
 
