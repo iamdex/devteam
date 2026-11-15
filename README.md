@@ -1,5 +1,7 @@
 # DevTeam — un team di sviluppo senior fatto di agenti Claude Code
 
+> 13 specialisti senior (product, growth, architettura, backend, dati, web, Expo, SwiftUI, devops, store, QA, security, piattaforma Claude) che collaborano come **agent team** di Claude Code, con gate di qualità e guardrail. Un plugin, riusabile su tutti i progetti.
+
 Plugin per Claude Code che ti dà un team di agenti specializzati, ognuno senior nel proprio ruolo, che **parlano tra loro** tramite gli *agent teams* di Claude Code (mailbox + task list condivisa). La sessione principale fa da **Tech Lead**, tu sei il product owner: approvi il piano, il team lo esegue, QA e security verificano.
 
 Il team è generico e riusabile su tutti i progetti. Il contesto specifico di ogni repo vive nel suo `CLAUDE.md` (sezione `## DevTeam`) e in `.claude/devteam.json`.
@@ -41,12 +43,12 @@ Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:s
 
 ## Installazione
 
-1. Pubblica questo repo su GitHub (privato va bene), poi in Claude Code:
+1. In Claude Code:
    ```
-   /plugin marketplace add <tuo-utente>/devteam
+   /plugin marketplace add iamdex/devteam
    /plugin install devteam@espertini-devteam
    ```
-   In alternativa, da una cartella locale: `/plugin marketplace add /percorso/devteam`.
+   Il repo è privato: Claude Code usa le tue credenziali git (`gh auth login` o SSH). In alternativa, da una cartella locale: `/plugin marketplace add /percorso/devteam`.
 2. Lancia `/devteam:setup` e **riavvia Claude Code**. Gli agent teams sono sperimentali e disattivati di default: il setup aggiunge `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` al tuo `~/.claude/settings.json` (un plugin non può impostarlo da solo).
 3. In ogni progetto: `/devteam:onboard`, controlla i due file generati e committali.
 
