@@ -54,6 +54,41 @@ Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:s
 
 Requisiti: Claude Code recente (agent teams da v2.1.32; testato con 2.1.325), `jq` oppure `python3` per gli hook, `tmux` solo se vuoi i pannelli separati.
 
+## Usarlo da iPad o da telefono
+
+L'app Claude per iOS (anche su iPad) e Android ha la scheda **Code**, ma il team completo funziona solo dove gira davvero Claude Code. Ci sono due modi.
+
+### Remote Control: team completo (consigliato)
+
+Claude Code gira su una macchina tua (un server Linux, un Mac, un PC) e il tablet è solo la finestra. Agent teams, hook e guardrail funzionano esattamente come in locale.
+
+1. Sulla macchina: installa Claude Code (v2.1.51 o successiva), poi il plugin e `/devteam:setup`, come descritto sopra.
+2. Clona il progetto su cui vuoi lavorare ed esegui `/devteam:onboard` la prima volta.
+3. Avvia Claude Code dentro `tmux` (o `screen`), così la sessione resta viva quando chiudi la connessione:
+   ```
+   tmux new -s devteam
+   claude --remote-control
+   ```
+   Da una sessione già aperta puoi usare `/remote-control` (o `/rc`).
+4. Sul tablet apri l'app Claude → scheda **Code** e scegli la sessione. Puoi lanciare `/devteam:feature`, approvare il piano e seguire i teammate da lì.
+
+Se sul tablet usi già un editor nel browser collegato alla stessa macchina (ad esempio code-server), puoi anche aprire Claude Code direttamente nel suo terminale integrato.
+
+### Sessioni cloud: subagent, senza team
+
+Le sessioni cloud girano sull'infrastruttura di Anthropic e non hanno bisogno di una tua macchina. Per caricare il plugin, dichiaralo nel `.claude/settings.json` del progetto (committato):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "espertini-devteam": { "source": { "source": "github", "repo": "iamdex/devteam" } }
+  },
+  "enabledPlugins": { "devteam@espertini-devteam": true }
+}
+```
+
+Limite attuale: in cloud gli agent teams non risultano disponibili, quindi gli agenti lavorano come subagent singoli. `/devteam:review`, `/devteam:debug`, `/devteam:strategy` e `/devteam:release` si adattano da soli; `/devteam:feature` richiede gli agent teams e va usato con Remote Control o in locale.
+
 ## Come lavora (`/devteam:feature`)
 
 1. **Capire e dimensionare** — se il lavoro è piccolo il lead te lo dice e lo fa da solo: un team costa più token. Se la richiesta è più un'idea che una specifica, `product` scrive prima il brief con i criteri di accettazione.
