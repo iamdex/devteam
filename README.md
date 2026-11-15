@@ -48,7 +48,7 @@ Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:s
    /plugin marketplace add iamdex/devteam
    /plugin install devteam@espertini-devteam
    ```
-   Il repo è privato: Claude Code usa le tue credenziali git (`gh auth login` o SSH). In alternativa, da una cartella locale: `/plugin marketplace add /percorso/devteam`.
+   Il repo è pubblico, quindi non servono credenziali. Se un giorno lo rendi privato, la macchina deve avere accesso git a GitHub (`gh auth login` o SSH). In alternativa, da una cartella locale: `/plugin marketplace add /percorso/devteam`.
 2. Lancia `/devteam:setup` e **riavvia Claude Code**. Gli agent teams sono sperimentali e disattivati di default: il setup aggiunge `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` al tuo `~/.claude/settings.json` (un plugin non può impostarlo da solo).
 3. In ogni progetto: `/devteam:onboard`, controlla i due file generati e committali.
 
