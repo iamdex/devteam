@@ -4,6 +4,8 @@
 
 Plugin per Claude Code che ti dà un team di agenti specializzati, ognuno senior nel proprio ruolo, che **parlano tra loro** tramite gli *agent teams* di Claude Code (mailbox + task list condivisa). La sessione principale fa da **Tech Lead**, tu sei il product owner: approvi il piano, il team lo esegue, QA e security verificano.
 
+Sito con la guida completa e animata (IT/EN): [`site/`](site/index.html) — apri `site/index.html` nel browser, oppure pubblicalo con GitHub Pages (vedi [Sito](#sito)).
+
 Il team è generico e riusabile su tutti i progetti. Il contesto specifico di ogni repo vive nel suo `CLAUDE.md` (sezione `## DevTeam`) e in `.claude/devteam.json`.
 
 ## Il team
@@ -151,7 +153,16 @@ plugins/devteam/
   scripts/       hook (bash + jq/python3/node)
   templates/     CLAUDE.devteam.md, devteam.json
 tests/hooks.sh   test degli hook
+site/            sito statico IT/EN (GitHub Pages)
 ```
+
+## Sito
+
+`site/` è una pagina statica senza build né dipendenze JS: spiega il team, il flusso, i comandi, l'installazione e la configurazione con terminali animati.
+
+- `site/index.html` — versione italiana (la sorgente)
+- `site/en/index.html` — versione inglese, **generata**: dopo aver modificato il testo italiano aggiorna le coppie in `site/build-en.py` e lancia `python3 site/build-en.py` (si ferma ed elenca le frasi senza traduzione)
+- `.github/workflows/pages.yml` pubblica `site/` su GitHub Pages a ogni push su `main`. Va attivato una volta: repo → Settings → Pages → Source: **GitHub Actions**.
 
 ## Estendere
 
