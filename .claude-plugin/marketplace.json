@@ -10,6 +10,11 @@
       "name": "devteam",
       "source": "./plugins/devteam",
       "description": "A senior team of 13 specialists (product, growth, architecture, backend, data, web, Expo, SwiftUI, devops, app stores, QA, security, Claude platform) that works as a Claude Code agent team."
+    },
+    {
+      "name": "devteam-hud",
+      "source": "./plugins/devteam-hud",
+      "description": "HUD for the DevTeam: team panel, plan-approval and blocker row, visible quality gates and guardrail, cost in the status line, /devteam-status, optional DevTeam look. Works in the terminal, desktop and the Claude mobile app."
     }
   ]
 }

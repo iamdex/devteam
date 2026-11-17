@@ -49,12 +49,28 @@ Gli agenti si possono usare anche da soli, come subagent normali: "usa devteam:s
    ```
    /plugin marketplace add iamdex/devteam
    /plugin install devteam@espertini-devteam
+   /plugin install devteam-hud@espertini-devteam   # facoltativo: il pannello del team
    ```
    Il repo è pubblico, quindi non servono credenziali. Se un giorno lo rendi privato, la macchina deve avere accesso git a GitHub (`gh auth login` o SSH). In alternativa, da una cartella locale: `/plugin marketplace add /percorso/devteam`.
 2. Lancia `/devteam:setup` e **riavvia Claude Code**. Gli agent teams sono sperimentali e disattivati di default: il setup aggiunge `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` al tuo `~/.claude/settings.json` (un plugin non può impostarlo da solo).
 3. In ogni progetto: `/devteam:onboard`, controlla i due file generati e committali.
 
 Requisiti: Claude Code recente (agent teams da v2.1.32; testato con 2.1.325), `jq` oppure `python3` per gli hook, `tmux` solo se vuoi i pannelli separati.
+
+## DevTeam HUD (mod)
+
+`devteam-hud` è una mod che si installa accanto al plugin e ti fa **vedere il team mentre lavora**, anche dall'app Claude su iPad:
+
+- **pannello del team**: una riga per teammate con ruolo, modello, stato e cosa sta facendo, più task, messaggi `[CONTRACT]`/`[QUESTION]`/`[BLOCKER]`/`[HANDOFF]`, gate e comandi bloccati. Si apre da solo quando parte un team, o con `/devteam-hud`;
+- **"tocca a te" sopra il prompt**: i pulsanti **Approva** / **Modifica** quando il lead aspetta l'ok sul piano, e i `[BLOCKER]` dei teammate con **Rispondi** / **Visto**;
+- **gate e guardrail visibili**: una scheda ✓/✕ sotto ogni task chiuso dal gate, e il motivo più **Copia comando** sotto ogni comando bloccato;
+- **costi in status line**, con avviso sopra i 5 teammate attivi; **`/devteam-status`** per un riepilogo; **tema DevTeam** facoltativo per desktop e mobile.
+
+```
+/plugin install devteam-hud@espertini-devteam
+```
+
+Opzioni (`language`, `autoOpen`, `costWarnAt`, `theme`) da `/config`. Dettagli in [`plugins/devteam-hud/README.md`](plugins/devteam-hud/README.md).
 
 ## Usarlo da iPad o da telefono
 
@@ -153,6 +169,7 @@ plugins/devteam/
   scripts/       hook (bash + jq/python3/node)
   templates/     CLAUDE.devteam.md, devteam.json
 tests/hooks.sh   test degli hook
+plugins/devteam-hud/  mod: pannello del team, approvazioni, gate visibili, costi
 site/            sito statico IT/EN (GitHub Pages)
 ```
 
@@ -169,4 +186,4 @@ site/            sito statico IT/EN (GitHub Pages)
 
 - **Nuovo ruolo**: aggiungi `plugins/devteam/agents/<ruolo>.md` copiando la sezione "Team protocol" e aggiungilo alla tabella nella skill `feature`.
 - **Nuove convenzioni di stack**: una skill `skills/stack-<nome>/SKILL.md` con una `description` precisa su quando usarla.
-- Dopo una modifica: `claude plugin validate ./plugins/devteam`, `bash tests/hooks.sh`, alza `version` in `plugin.json` e fai `/plugin update`.
+- Dopo una modifica: `claude plugin validate ./plugins/devteam`, `bash tests/hooks.sh` (per la mod: `claude plugin validate ./plugins/devteam-hud` e `claude plugin test ./plugins/devteam-hud`), alza `version` in `plugin.json` e fai `/plugin update`.
