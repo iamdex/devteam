@@ -162,6 +162,7 @@ site/            sito statico IT/EN (GitHub Pages)
 
 - `site/index.html` — versione italiana (la sorgente)
 - `site/en/index.html` — versione inglese, **generata**: dopo aver modificato il testo italiano aggiorna le coppie in `site/build-en.py` e lancia `python3 site/build-en.py` (si ferma ed elenca le frasi senza traduzione)
+- `site/og.png` e `site/en/og.png` — immagini di anteprima per i link condivisi (1200×630), generate con `node site/tools/og-image.js`; rigenerale quando cambi versione o titolo
 - `.github/workflows/pages.yml` pubblica `site/` su GitHub Pages a ogni push su `main`. Va attivato una volta: repo → Settings → Pages → Source: **GitHub Actions**.
 
 ## Estendere

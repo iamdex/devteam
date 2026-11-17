@@ -21,6 +21,12 @@ P = [
 ('<a class="btn sm lang" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>','<a class="btn sm lang" href="../" hreflang="it" lang="it" aria-label="Versione italiana">IT</a>'),
 ('>Come funziona</a>','>How it works</a>'),('>Il team</a>','>The team</a>'),('>Il flusso</a>','>The flow</a>'),
 ('>Comandi</a>','>Commands</a>'),('>Installa</a>','>Install</a>'),('>Configura</a>','>Configure</a>'),
+# ---- social preview (og:title / og:description are covered by the pairs above)
+('<meta property="og:locale" content="it_IT">','<meta property="og:locale" content="en_US">'),
+('<meta property="og:url" content="https://iamdex.github.io/devteam/">','<meta property="og:url" content="https://iamdex.github.io/devteam/en/">'),
+('content="https://iamdex.github.io/devteam/og.png"','content="https://iamdex.github.io/devteam/en/og.png"'),
+('content="DevTeam: il lead al centro e i 13 agenti senior collegati attorno"','content="DevTeam: the lead at the center, connected to the 13 senior agents around it"'),
+('<link rel="canonical" href="https://iamdex.github.io/devteam/">','<link rel="canonical" href="https://iamdex.github.io/devteam/en/">'),
 # ---- hero
 ('plugin per Claude Code · agent teams','Claude Code plugin · agent teams'),
 ('<h1 id="hero-title">Un team di sviluppo <span class="grad-text">senior.</span> Fatto di agenti.</h1>','<h1 id="hero-title">A <span class="grad-text">senior</span> dev team. Made of agents.</h1>'),
