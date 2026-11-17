@@ -43,4 +43,6 @@ If agent teams aren't enabled, run the investigators as subagents and do the cro
 - **Fix proposto** — the minimal fix, files involved, risk, and how to prevent regression (test to add)
 - **Urgenza** — whether production is affected and any immediate mitigation
 
+End the report with the line `⏸ In attesa della tua approvazione` on its own, so the `devteam-hud` panel shows Dex the Approve / Change buttons for the fix.
+
 Shut down investigators. Apply the fix only if Dex says so — either yourself for a small fix, or via `/devteam:feature`.

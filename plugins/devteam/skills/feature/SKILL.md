@@ -58,6 +58,12 @@ Present the plan to Dex in Italian, compactly:
 - **Rischi** — and how they are handled
 - **Costo** — remind that each teammate is a separate session (more tokens)
 
+End the message with this exact line, on its own, so the `devteam-hud` panel can show Dex the Approve / Change buttons:
+
+```
+⏸ In attesa della tua approvazione
+```
+
 **Wait for Dex's explicit approval.** Apply his changes and re-present if needed. Never start implementation without it.
 
 ## Phase 4 — Build
