@@ -270,6 +270,35 @@ h3{font-size:22px;letter-spacing:-.02em;line-height:1.25}
 .chips-wrap code{font-size:12px;padding:5px 10px;border-radius:8px;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.22);color:#fca5a5}
 @media (max-width:900px){.guard{grid-template-columns:1fr}}
 
+/* ---------- hud ---------- */
+.hud{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;margin-top:56px;align-items:start}
+.hud-shot{background:#0b0d15;border:1px solid var(--line2);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px -24px rgba(0,0,0,.8),0 0 0 1px rgba(167,139,250,.06)}
+.hud-shot .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--dim)}
+.hud-shot .bar b{color:var(--text);font-weight:600}
+.hud-body{padding:16px 18px;font-family:var(--mono);font-size:13px;line-height:1.7}
+.hud-body .muted{color:var(--dim)}
+.hud-row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.hud-row .nm{font-weight:700}
+.hud-row .st{transition:color .4s}
+.hud-sub{color:var(--dim);padding-left:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .4s}
+.hud-sub.blk{color:var(--red)}
+.hud-h{color:var(--text);font-weight:700;margin-top:12px}
+.hud-band{border-top:1px solid var(--line);padding:14px 18px;background:rgba(250,204,21,.04)}
+.hud-band .q{font-family:var(--mono);font-size:13px;color:var(--yellow);font-weight:700}
+.hud-band .q span{color:var(--dim);font-weight:400}
+.hud-btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hud-btns span{font-family:var(--sans);font-size:13px;font-weight:600;border:1px solid var(--line2);border-radius:9px;padding:6px 12px;color:var(--text)}
+.hud-btns span.pri{background:var(--grad);color:#0a0b12;border:0}
+.hud-status{border-top:1px solid var(--line);padding:9px 18px;font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hud-feats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hfeat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.hfeat .i{font-size:20px}
+.hfeat h4{font-size:16px;margin:6px 0 4px}
+.hfeat p{color:var(--muted);font-size:14px}
+.hud-install{margin-top:22px}
+@media (max-width:900px){.hud{grid-template-columns:1fr}}
+@media (max-width:520px){.hud-feats{grid-template-columns:1fr}}
+
 /* ---------- remote ---------- */
 .remote{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
 .rcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:30px;position:relative;overflow:hidden}
@@ -330,7 +359,7 @@ details[open] summary::after{transform:rotate(45deg)}
 details p{color:var(--muted);padding-bottom:20px;font-size:15.5px}
 
 /* grid children with scrollers must be allowed to shrink */
-.cmds>*,.flow>*,.cfg-pane>*,.guard>*,.extend>*,.remote>*,.install>*,.hero .wrap>*{min-width:0}
+.cmds>*,.flow>*,.cfg-pane>*,.guard>*,.hud>*,.extend>*,.remote>*,.install>*,.hero .wrap>*{min-width:0}
 
 /* ---------- cta / footer ---------- */
 .final{text-align:center;padding:150px 0}
@@ -380,6 +409,7 @@ footer a:hover{color:var(--text)}
       <li><a href="#installa">Install</a></li>
       <li><a href="#configura">Configure</a></li>
       <li><a href="#guardrail">Guardrail</a></li>
+      <li><a href="#hud">HUD</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <div class="nav-cta">
@@ -743,6 +773,51 @@ footer a:hover{color:var(--text)}
       </div>
     </div>
     <div class="chips-wrap reveal" id="blocked-list"></div>
+  </div>
+</section>
+
+<!-- ================= HUD ================= -->
+<section id="hud">
+  <div class="wrap">
+    <div class="kicker reveal">The devteam-hud mod</div>
+    <h2 class="reveal d1">The team in plain sight.<br><span class="grad-text">Even from your iPad.</span></h2>
+    <p class="sub reveal d2">A mod you install next to the plugin. It shows who is working on what, and calls you only when a decision is yours. It works in the terminal, the desktop app, VS Code and the Claude app on iPad and phone.</p>
+
+    <div class="hud">
+      <div class="hud-shot reveal d1" role="img" aria-label="Preview of the DevTeam panel">
+        <div class="bar"><b>DevTeam</b><span id="hud-count">4 teammates · 3 working · ~$1.84 (estimate)</span></div>
+        <div class="hud-body">
+          <div id="hud-team"></div>
+          <div class="hud-h">Tasks <span class="muted">2 to do · 3 in progress · 4 done</span></div>
+          <div class="hud-sub">◐ recurring invoices API — backend</div>
+          <div class="hud-sub">◐ contract tests — qa</div>
+          <div class="hud-h">Messages</div>
+          <div class="hud-sub" id="hud-msg"><span style="color:var(--cyan)">[CONTRACT]</span> data → backend: added column paused_at</div>
+          <div class="hud-h">Quality gates</div>
+          <div class="hud-sub" style="color:var(--green)">✓ Recurring invoices schema and RLS</div>
+          <div class="hud-sub" style="color:var(--red)">✕ Recurring invoices API — unit tests</div>
+        </div>
+        <div class="hud-band">
+          <div class="q">⏸ The plan is waiting for your go-ahead <span>4 teammates · 9 tasks · 2 risks</span></div>
+          <div class="hud-btns"><span class="pri">Approve</span><span>Change</span><span>Later</span></div>
+        </div>
+        <div class="hud-status"><span>DevTeam · 3 working / 4 teammates · ~$1.84 (estimate)</span><span>/devteam-status</span></div>
+      </div>
+
+      <div>
+        <div class="hud-feats">
+          <div class="hfeat reveal d1"><div class="i">👥</div><h4>Team panel</h4><p>One row per teammate: role, model, status, what it is doing. Plus tasks, messages, gates and blocked commands. Opens by itself when a team starts.</p></div>
+          <div class="hfeat reveal d2"><div class="i">⏸</div><h4>"Your turn"</h4><p><b>Approve</b> and <b>Change</b> above the prompt when the lead waits for your go-ahead on the plan. Teammates' <b>[BLOCKER]</b>s with <b>Reply</b> and <b>Seen</b>.</p></div>
+          <div class="hfeat reveal d3"><div class="i">✅</div><h4>Visible gates</h4><p>A ✓/✕ card under every task the gate judged, with the last lines of the error. No more results lost in the text.</p></div>
+          <div class="hfeat reveal d1"><div class="i">🛡️</div><h4>A clear guardrail</h4><p>Under every blocked command: the reason and <b>Copy command</b>, if you want to run it yourself.</p></div>
+          <div class="hfeat reveal d2"><div class="i">💸</div><h4>Cost in the status line</h4><p>Active teammates and estimated cost, with a warning above 5. <span class="inline-code">/devteam-status</span> for a summary.</p></div>
+          <div class="hfeat reveal d3"><div class="i">🎨</div><h4>DevTeam look</h4><p>The colors of this site in the desktop and mobile apps. Optional, from <span class="inline-code">/config</span>, along with the language.</p></div>
+        </div>
+        <div class="hud-install reveal">
+          <div class="code"><span class="p">/plugin</span> install <span class="c">devteam-hud@espertini-devteam</span><button class="copy" data-copy="/plugin install devteam-hud@espertini-devteam" aria-label="Copy">⧉</button></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1423,6 +1498,39 @@ let guardRunning = false;
 new IntersectionObserver(([e]) => {
   if (e.isIntersecting && !guardRunning) { guardRunning = true; (async () => { while (true) { await play($('#guard-term'), GUARD); await sleep(1000); if (RM) break; } })(); }
 }, {threshold:.25}).observe($('#guard-term'));
+
+/* ---------------- hud preview ---------------- */
+(function hud(){
+  const C = n => COLORS[AGENTS.find(a => a.id === n).color];
+  const ST = {run:['working','var(--green)'], idle:['idle','var(--blue)'], wait:['waiting','var(--yellow)'], done:['done','var(--dim)']};
+  const frames = [
+    [['backend','sonnet','run','POST /api/invoices/recurring'],['data','sonnet','run','migration 0042_recurring.sql'],['frontend','sonnet','run','billing settings page'],['qa','opus','idle','contract tests written']],
+    [['backend','sonnet','run','fix off-by-one on next_run'],['data','sonnet','done','schema and RLS ready'],['frontend','sonnet','wait','waiting for the next_run contract'],['qa','opus','run','recurring invoices e2e']],
+    [['backend','sonnet','run','daily scheduler'],['data','sonnet','run','demo tenant fixture'],['frontend','sonnet','run','billing settings page'],['qa','opus','run','!demo tenant fixture missing']],
+  ];
+  const msgs = [
+    '<span style="color:var(--cyan)">[CONTRACT]</span> data → backend: added column paused_at',
+    '<span style="color:var(--yellow)">[QUESTION]</span> frontend → backend: is next_run UTC?',
+    '<span style="color:var(--red)">[BLOCKER]</span> qa → lead: demo tenant fixture missing',
+  ];
+  const team = $('#hud-team'); let i = 0;
+  function draw(){
+    const f = frames[i % frames.length];
+    team.innerHTML = f.map(([n, m, st, lab]) => {
+      const blk = lab.startsWith('!');
+      return `<div class="hud-row"><span class="nm" style="color:${C(n)}">● ${n}</span><span class="muted">${m}</span><span class="st" style="color:${ST[st][1]}">${ST[st][0]}</span></div><div class="hud-sub${blk ? ' blk' : ''}">${blk ? '⛔ ' + lab.slice(1) : lab}</div>`;
+    }).join('');
+    $('#hud-msg').innerHTML = msgs[i % msgs.length];
+    const working = f.filter(r => r[2] === 'run').length;
+    $('#hud-count').textContent = `4 teammates · ${working} working · ~$${(1.84 + (i % 3) * 0.07).toFixed(2)} (estimate)`;
+    i++;
+  }
+  draw();
+  if (!RM) {
+    let on = false, t;
+    new IntersectionObserver(([e]) => { if (e.isIntersecting && !on) { on = true; t = setInterval(draw, 2600); } else if (!e.isIntersecting && on) { on = false; clearInterval(t); } }).observe($('#hud'));
+  }
+})();
 
 /* ---------------- team size meter ---------------- */
 const rng = $('#tm-range'), out = $('#tm-out'), bars = $('#tm-bars'), ver = $('#tm-verdict');
