@@ -1,0 +1,1440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevTeam — a senior dev team made of agents</title>
+<meta name="description" content="DevTeam is a Claude Code plugin: 13 senior specialists that work together as an agent team, with quality gates and guardrails. How it works, how to use it, how to configure it.">
+<meta property="og:title" content="DevTeam — a senior dev team made of agents">
+<meta property="og:description" content="13 senior Claude Code agents that talk to each other. You approve the plan, the team executes it, QA and security verify it.">
+<meta name="theme-color" content="#07080d">
+<link rel="alternate" hreflang="it" href="../">
+<link rel="alternate" hreflang="en" href="./">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23a78bfa'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%2307080d'/%3E%3Ccircle cx='32' cy='32' r='7' fill='url(%23g)'/%3E%3Cg fill='none' stroke='url(%23g)' stroke-width='3'%3E%3Ccircle cx='32' cy='32' r='20' stroke-dasharray='6 6'/%3E%3C/g%3E%3Ccircle cx='52' cy='32' r='4' fill='%2322d3ee'/%3E%3Ccircle cx='14' cy='22' r='4' fill='%23a78bfa'/%3E%3Ccircle cx='22' cy='49' r='4' fill='%23fb923c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080d; --bg2:#0c0e16; --panel:#10131d; --panel2:#151927;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --text:#e9ecf5; --muted:#9aa3b8; --dim:#6b7389;
+  --violet:#a78bfa; --cyan:#22d3ee; --orange:#fb923c; --green:#4ade80;
+  --red:#f87171; --yellow:#facc15; --pink:#f472b6; --blue:#60a5fa;
+  --grad:linear-gradient(120deg,#a78bfa 0%,#60a5fa 45%,#22d3ee 100%);
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Space Grotesk',system-ui,-apple-system,Segoe UI,sans-serif;
+  --r:18px; --maxw:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+code,pre,kbd{font-family:var(--mono)}
+::selection{background:rgba(167,139,250,.35)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+@media (max-width:600px){.wrap{padding:0 16px}body{font-size:16px}body .inline-code{white-space:normal;word-break:break-word}}
+
+/* ---------- background ---------- */
+.bg-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);opacity:.5}
+.bg-glow{position:fixed;z-index:-1;pointer-events:none;width:900px;height:900px;border-radius:50%;filter:blur(120px);opacity:.18}
+.bg-glow.a{background:#7c3aed;top:-400px;left:-300px;animation:drift 22s ease-in-out infinite alternate}
+.bg-glow.b{background:#0891b2;top:30vh;right:-450px;animation:drift 28s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(160px,120px) scale(1.15)}}
+
+/* ---------- nav ---------- */
+nav.top{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+nav.top.scrolled{background:rgba(7,8,13,.78);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-color:var(--line)}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;text-decoration:none;font-size:19px}
+.logo svg{width:30px;height:30px}
+.navlinks{display:flex;gap:4px;list-style:none}
+.navlinks a{text-decoration:none;color:var(--muted);font-size:14.5px;padding:8px 12px;border-radius:10px;transition:color .2s,background .2s}
+.navlinks a:hover,.navlinks a.active{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-cta{display:flex;gap:8px;align-items:center}
+.burger{display:none;background:none;border:1px solid var(--line2);color:var(--text);border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:18px}
+@media (max-width:980px){
+  .navlinks{position:fixed;top:64px;left:0;right:0;flex-direction:column;background:rgba(7,8,13,.97);border-bottom:1px solid var(--line);padding:12px 16px 20px;transform:translateY(-130%);transition:transform .35s ease}
+  .navlinks.open{transform:none}
+  .navlinks a{display:block;padding:12px}
+  .burger{display:block}
+  .nav-cta .btn{display:none}
+  .nav-cta .btn.lang{display:inline-flex}
+}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:600;font-size:15px;text-decoration:none;border-radius:12px;padding:12px 20px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)}
+.btn.primary{background:var(--grad);border:0;color:#0a0b12;box-shadow:0 10px 40px -10px rgba(124,58,237,.7)}
+.btn.primary:hover{box-shadow:0 14px 50px -8px rgba(34,211,238,.6)}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:10px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:110px 0 60px;overflow:hidden}
+#net{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--muted);border:1px solid var(--line2);background:rgba(16,19,29,.7);padding:6px 14px 6px 8px;border-radius:999px;backdrop-filter:blur(6px)}
+.eyebrow .pill{background:var(--grad);color:#0a0b12;font-weight:700;padding:2px 8px;border-radius:999px;font-size:11.5px}
+h1{font-size:clamp(42px,6.4vw,84px);line-height:1;letter-spacing:-.045em;font-weight:700;margin:22px 0 22px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% 0}}
+.hero p.lead{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:560px}
+.hero p.lead b{color:var(--text);font-weight:600}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero-stats{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+.hero-stats div{font-family:var(--mono);font-size:12.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.hero-stats b{display:block;font-family:var(--sans);font-size:32px;color:var(--text);letter-spacing:-.03em;text-transform:none}
+.split-word{display:inline-block;opacity:0;transform:translateY(40px) rotate(4deg);filter:blur(8px);animation:wordIn .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes wordIn{to{opacity:1;transform:none;filter:none}}
+.fade-up{opacity:0;transform:translateY(20px);animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint i{display:block;width:1px;height:42px;background:linear-gradient(var(--violet),transparent);animation:hint 2s ease-in-out infinite;transform-origin:top}
+@keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+@media (max-width:980px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:100px}#net{opacity:.35}}
+
+/* ---------- terminal ---------- */
+.term{background:rgba(10,12,19,.92);border:1px solid var(--line2);border-radius:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 0 0 1px rgba(167,139,250,.06),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden;backdrop-filter:blur(10px)}
+.term-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.term-bar i{width:11px;height:11px;border-radius:50%;background:#2a2f3e}
+.term-bar i:nth-child(1){background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
+.term-bar span{margin-left:10px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.term-body{font-family:var(--mono);font-size:13.2px;line-height:1.75;padding:18px 20px;min-height:320px;white-space:pre-wrap;word-break:break-word;color:#cfd5e4}
+.term-body .p{color:var(--violet)}
+.term-body .c{color:var(--cyan)}
+.term-body .g{color:var(--green)}
+.term-body .o{color:var(--orange)}
+.term-body .r{color:var(--red)}
+.term-body .y{color:var(--yellow)}
+.term-body .k{color:var(--pink)}
+.term-body .b{color:var(--blue)}
+.term-body .d{color:var(--dim)}
+.term-body .w{color:#fff;font-weight:700}
+.cursor{display:inline-block;width:8px;height:1.1em;background:var(--cyan);vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (max-width:600px){.term-body{font-size:12px;padding:14px;min-height:280px}}
+
+/* ---------- sections ---------- */
+section{position:relative;padding:130px 0}
+@media (max-width:700px){section{padding:90px 0}}
+.kicker{font-family:var(--mono);font-size:13px;color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.kicker::before{content:"";width:28px;height:1px;background:var(--cyan)}
+h2{font-size:clamp(34px,4.6vw,58px);line-height:1.05;letter-spacing:-.04em;margin:16px 0 20px;font-weight:700}
+.sub{color:var(--muted);font-size:clamp(17px,1.5vw,19px);max-width:720px}
+h3{font-size:22px;letter-spacing:-.02em;line-height:1.25}
+.reveal{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+.inline-code{font-family:var(--mono);font-size:.86em;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.2);padding:1px 7px;border-radius:6px;color:#d6ccff;white-space:nowrap}
+
+/* ---------- roles diagram ---------- */
+.roles3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.rolecard{position:relative;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:30px;overflow:hidden}
+.rolecard .big{font-family:var(--mono);font-size:12.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.rolecard h3{margin:14px 0 10px;font-size:26px}
+.rolecard p{color:var(--muted);font-size:15.5px}
+.rolecard .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin-bottom:14px;border:1px solid var(--line2)}
+.rolecard::after{content:"";position:absolute;inset:auto -40% -60% auto;width:260px;height:260px;border-radius:50%;filter:blur(60px);opacity:.25;background:var(--accent,#a78bfa)}
+.arrow-row{display:flex;justify-content:center;gap:10px;margin-top:26px;font-family:var(--mono);font-size:13px;color:var(--dim);flex-wrap:wrap}
+.arrow-row span{border:1px dashed var(--line2);padding:6px 12px;border-radius:999px}
+@media (max-width:860px){.roles3{grid-template-columns:1fr}}
+
+/* ---------- team ---------- */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:40px 0 28px}
+.chip{font-family:var(--mono);font-size:13px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer;transition:all .2s}
+.chip:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.chip.on{background:var(--text);color:#0a0b12;border-color:var(--text)}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.agent{--c:#a78bfa;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,opacity .35s,box-shadow .35s;transform-style:preserve-3d;overflow:hidden;cursor:pointer}
+.agent::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--c) 20%,transparent),transparent 45%);opacity:0;transition:opacity .3s}
+.agent:hover::before,.agent.open::before{opacity:1}
+.agent:hover,.agent.open{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 20px 60px -25px color-mix(in srgb,var(--c) 70%,transparent)}
+.agent.hide{opacity:.12;transform:scale(.96);pointer-events:none}
+.agent-head{display:flex;align-items:center;gap:14px;position:relative}
+.avatar{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:15px;color:#0a0b12;background:var(--c);box-shadow:0 0 24px -4px var(--c);flex-shrink:0}
+.agent h4{font-size:18px;letter-spacing:-.01em}
+.agent .type{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.agent p{position:relative;color:var(--muted);font-size:14.5px;margin-top:14px;line-height:1.55}
+.agent .meta{position:relative;display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tag.opus{border-color:rgba(167,139,250,.45);color:#cdbdff;background:rgba(167,139,250,.1)}
+.tag.sonnet{border-color:rgba(34,211,238,.4);color:#a5f0fc;background:rgba(34,211,238,.08)}
+.agent .more{position:relative;max-height:0;overflow:hidden;transition:max-height .5s ease;font-size:14px;color:var(--muted)}
+.agent.open .more{max-height:260px}
+.agent .more div{padding-top:14px;margin-top:14px;border-top:1px dashed var(--line2)}
+.agent .more code{font-size:12px;color:#d6ccff}
+.agent.lead-card{--c:#ffffff;background:linear-gradient(135deg,rgba(167,139,250,.14),rgba(34,211,238,.08)),var(--panel)}
+.agent.lead-card .avatar{background:var(--grad)}
+
+/* ---------- flow ---------- */
+.flow{display:grid;grid-template-columns:1fr 1.05fr;gap:56px;margin-top:64px;align-items:start}
+.steps{position:relative}
+.steps::before{content:"";position:absolute;left:23px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.steps .progress{position:absolute;left:23px;top:10px;width:2px;background:var(--grad);height:0;transition:height .5s ease;box-shadow:0 0 12px var(--violet)}
+.step{position:relative;padding:0 0 0 72px;min-height:52vh;display:flex;flex-direction:column;justify-content:center;opacity:.32;transition:opacity .5s}
+.step.active{opacity:1}
+.step .num{position:absolute;left:0;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:700;background:var(--bg);border:2px solid var(--line2);transition:all .4s}
+.step.active .num{border-color:transparent;background:var(--grad);color:#0a0b12;box-shadow:0 0 30px -4px var(--violet)}
+.step h3{font-size:clamp(22px,2.4vw,30px)}
+.step p{color:var(--muted);margin-top:10px}
+.step .who{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.step .gate{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);font-size:12.5px;color:var(--yellow);border:1px solid rgba(250,204,21,.35);background:rgba(250,204,21,.07);padding:6px 12px;border-radius:10px;width:fit-content}
+#hero-term{height:380px;overflow:hidden}
+.flow-term{position:sticky;top:110px}
+.flow-term .term-body{min-height:440px}
+.msgtag{display:inline-block;font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:7px;margin:3px 4px 0 0;border:1px solid var(--line2)}
+@media (max-width:900px){.flow{grid-template-columns:1fr}.flow-term{position:relative;top:0;order:-1}.step{min-height:auto;padding-bottom:42px}.steps::before,.steps .progress{display:none}.step .num{top:0;transform:none}.step{opacity:1}}
+
+/* ---------- commands ---------- */
+.cmds{display:grid;grid-template-columns:330px 1fr;gap:24px;margin-top:56px}
+.cmd-list{display:flex;flex-direction:column;gap:8px}
+.cmd-btn{text-align:left;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .25s;font-family:var(--sans)}
+.cmd-btn code{font-size:14px;color:var(--violet);font-weight:500}
+.cmd-btn small{display:block;color:var(--dim);font-size:13px;margin-top:3px}
+.cmd-btn .freq{float:right;font-family:var(--mono);font-size:10.5px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-top:2px}
+.cmd-btn:hover{border-color:var(--line2);transform:translateX(4px)}
+.cmd-btn.on{border-color:rgba(167,139,250,.6);background:linear-gradient(90deg,rgba(167,139,250,.14),var(--panel));box-shadow:0 10px 40px -20px var(--violet)}
+.cmd-detail .term-body{min-height:400px}
+.cmd-desc{margin-bottom:16px;color:var(--muted)}
+.cmd-desc b{color:var(--text)}
+@media (max-width:900px){.cmds{grid-template-columns:1fr}.cmd-list{flex-direction:row;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}.cmd-btn{min-width:210px;scroll-snap-align:start}.cmd-btn:hover{transform:none}}
+
+/* ---------- install ---------- */
+.install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px;counter-reset:inst}
+.icard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column}
+.icard .n{font-family:var(--mono);font-size:56px;font-weight:700;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.9}
+.icard h3{margin:14px 0 8px}
+.icard p{color:var(--muted);font-size:15px;flex:1}
+.icard .where{font-family:var(--mono);font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+.code{position:relative;margin-top:18px;background:#090b12;border:1px solid var(--line2);border-radius:12px;padding:14px 46px 14px 16px;font-family:var(--mono);font-size:13px;line-height:1.7;color:#d7dceb;overflow-x:auto;white-space:pre}
+.code .p{color:var(--violet)}.code .c{color:var(--cyan)}.code .s{color:var(--green)}.code .d{color:var(--dim)}.code .o{color:var(--orange)}.code .k{color:var(--pink)}
+.copy{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:8px;border:1px solid var(--line2);background:var(--panel2);color:var(--muted);cursor:pointer;display:grid;place-items:center;transition:all .2s}
+.copy:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.copy.ok{color:var(--green);border-color:var(--green)}
+.req{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14.5px}
+.note{margin-top:18px;border-left:3px solid var(--orange);background:rgba(251,146,60,.06);padding:14px 18px;border-radius:0 12px 12px 0;color:var(--muted);font-size:15px}
+.note b{color:var(--text)}
+@media (max-width:900px){.install{grid-template-columns:1fr}}
+
+/* ---------- config ---------- */
+.cfg-tabs{display:flex;gap:6px;margin-top:48px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.cfg-tab{background:none;border:0;color:var(--muted);font-family:var(--mono);font-size:13.5px;padding:12px 16px;cursor:pointer;position:relative;transition:color .2s}
+.cfg-tab::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--grad);transform:scaleX(0);transition:transform .3s}
+.cfg-tab.on{color:var(--text)}
+.cfg-tab.on::after{transform:none}
+.cfg-pane{display:none;grid-template-columns:1.1fr .9fr;gap:28px;margin-top:28px;animation:fadeUp .5s ease forwards}
+.cfg-pane.on{display:grid}
+.json{background:#090b12;border:1px solid var(--line2);border-radius:16px;padding:22px 22px;font-family:var(--mono);font-size:13.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.json .key{color:var(--cyan);cursor:pointer;border-radius:5px;padding:1px 3px;margin:0 -3px;transition:background .2s,color .2s}
+.json .key:hover,.json .key.on{background:rgba(34,211,238,.16);color:#fff}
+.json .str{color:var(--green)}.json .num{color:var(--orange)}.json .bool{color:var(--pink)}.json .pn{color:var(--dim)}.json .cm{color:var(--dim);font-style:italic}
+.explain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;position:sticky;top:100px;align-self:start}
+.explain .k{font-family:var(--mono);color:var(--cyan);font-size:14px}
+.explain h4{font-size:22px;margin:8px 0 10px;letter-spacing:-.02em}
+.explain p{color:var(--muted);font-size:15px}
+.explain p+p{margin-top:10px}
+.explain .hint{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:18px}
+.explain ul{margin:10px 0 0 18px;color:var(--muted);font-size:15px}
+.explain li{margin-top:6px}
+@media (max-width:900px){.cfg-pane{grid-template-columns:1fr}.explain{position:relative;top:0}}
+
+/* ---------- guard ---------- */
+.guard{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:56px;align-items:start}
+.hooks{display:flex;flex-direction:column;gap:14px}
+.hook{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 22px 22px 22px;display:grid;grid-template-columns:44px 1fr;gap:16px;transition:border-color .3s,transform .3s}
+.hook:hover{border-color:var(--line2);transform:translateY(-3px)}
+.hook .hi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px;border:1px solid var(--line2)}
+.hook code{font-size:12.5px;color:var(--dim)}
+.hook h4{font-size:18px;margin:2px 0 6px}
+.hook p{color:var(--muted);font-size:14.5px}
+.guard-term .term-body{min-height:470px}
+.blocked{display:inline-block;background:rgba(248,113,113,.14);color:#fecaca;border:1px solid rgba(248,113,113,.5);padding:0 8px;border-radius:6px;font-weight:700;animation:shake .4s}
+.allowed{display:inline-block;background:rgba(74,222,128,.12);color:#bbf7d0;border:1px solid rgba(74,222,128,.45);padding:0 8px;border-radius:6px;font-weight:700}
+@keyframes shake{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chips-wrap code{font-size:12px;padding:5px 10px;border-radius:8px;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.22);color:#fca5a5}
+@media (max-width:900px){.guard{grid-template-columns:1fr}}
+
+/* ---------- remote ---------- */
+.remote{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
+.rcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:30px;position:relative;overflow:hidden}
+.rcard.best{border-color:rgba(167,139,250,.45);background:linear-gradient(180deg,rgba(167,139,250,.1),var(--panel) 40%)}
+.badge{position:absolute;top:22px;right:22px;font-family:var(--mono);font-size:11px;background:var(--grad);color:#0a0b12;font-weight:700;padding:4px 10px;border-radius:999px}
+.rcard h3{font-size:26px;margin-bottom:6px}
+.rcard .tl{color:var(--muted);margin-bottom:18px}
+.rcard ol{margin-left:20px;color:var(--muted);font-size:15px}
+.rcard li{margin-top:8px}
+.rcard li b{color:var(--text)}
+.check{list-style:none;margin:18px 0 0!important}
+.check li{padding-left:28px;position:relative}
+.check li::before{position:absolute;left:0;font-family:var(--mono);font-weight:700}
+.check li.y::before{content:"✓";color:var(--green)}
+.check li.n::before{content:"✕";color:var(--red)}
+.devices{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 24px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.devices .dev{border:1px solid var(--line2);border-radius:10px;padding:8px 12px;background:var(--bg2);color:var(--text)}
+.devices .wire{flex:1;max-width:120px;height:2px;background:repeating-linear-gradient(90deg,var(--violet) 0 6px,transparent 6px 12px);background-size:24px 2px;animation:wire 1s linear infinite}
+@keyframes wire{to{background-position:24px 0}}
+@media (max-width:860px){.remote{grid-template-columns:1fr}}
+
+/* ---------- limits ---------- */
+.limits{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+.lcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+.lcard .em{font-size:26px}
+.lcard h4{font-size:18px;margin:10px 0 6px}
+.lcard p{color:var(--muted);font-size:14.5px}
+.meter{margin-top:56px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:30px}
+.meter h3{margin-bottom:6px}
+.meter p{color:var(--muted);font-size:15px}
+.mrow{display:flex;align-items:center;gap:14px;margin-top:22px}
+.mrow input{flex:1;accent-color:#a78bfa}
+.mrow output{font-family:var(--mono);font-size:28px;font-weight:700;width:48px;text-align:right}
+.bars{display:flex;gap:4px;height:46px;align-items:flex-end;margin-top:20px}
+.bars i{flex:1;border-radius:4px 4px 0 0;background:var(--line2);transition:height .4s,background .4s}
+.verdict{font-family:var(--mono);font-size:14px;margin-top:14px}
+@media (max-width:900px){.limits{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.limits{grid-template-columns:1fr}}
+
+/* ---------- extend ---------- */
+.tree{background:#090b12;border:1px solid var(--line2);border-radius:16px;padding:24px;font-family:var(--mono);font-size:13.5px;line-height:1.85;white-space:pre;overflow-x:auto;color:#cfd5e4}
+.tree .f{color:var(--cyan)}.tree .d{color:var(--dim)}.tree .h{color:var(--violet);font-weight:700}
+.extend{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:56px;align-items:start}
+.ext-list{display:flex;flex-direction:column;gap:14px}
+.ext{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.ext h4{font-size:18px;margin-bottom:6px}
+.ext p{color:var(--muted);font-size:15px}
+@media (max-width:900px){.extend{grid-template-columns:1fr}}
+
+/* ---------- faq ---------- */
+.faq{margin-top:48px;display:flex;flex-direction:column;gap:10px;max-width:860px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0 22px;transition:border-color .3s}
+details[open]{border-color:var(--line2)}
+summary{cursor:pointer;list-style:none;padding:20px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--mono);font-size:22px;color:var(--violet);transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--muted);padding-bottom:20px;font-size:15.5px}
+
+/* grid children with scrollers must be allowed to shrink */
+.cmds>*,.flow>*,.cfg-pane>*,.guard>*,.extend>*,.remote>*,.install>*,.hero .wrap>*{min-width:0}
+
+/* ---------- cta / footer ---------- */
+.final{text-align:center;padding:150px 0}
+.final h2{font-size:clamp(40px,6vw,76px)}
+.final .sub{margin:0 auto}
+.final .hero-ctas{justify-content:center}
+.big-cmd{display:inline-flex;align-items:center;gap:14px;margin-top:36px;font-family:var(--mono);font-size:clamp(14px,1.6vw,18px);background:#090b12;border:1px solid var(--line2);border-radius:14px;padding:16px 18px 16px 22px;max-width:100%;overflow-x:auto}
+.big-cmd .p{color:var(--violet)}
+.big-cmd .copy{position:static;flex-shrink:0}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;background:rgba(12,14,22,.6)}
+.marquee .track{display:flex;gap:44px;width:max-content;animation:marq 40s linear infinite;font-family:var(--mono);font-size:14px;color:var(--dim);white-space:nowrap}
+.marquee .track span b{color:var(--text);font-weight:500}
+.marquee .track span::before{content:"◆";color:var(--violet);margin-right:14px;font-size:10px;vertical-align:2px}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:#0a0b12;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:100}
+.toast.show{transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .reveal{opacity:1;transform:none}
+  .split-word,.fade-up{opacity:1;transform:none;filter:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow a"></div>
+<div class="bg-glow b"></div>
+
+<nav class="top" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="DevTeam">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><circle cx="32" cy="32" r="7" fill="url(#lg)"/><circle cx="32" cy="32" r="21" fill="none" stroke="url(#lg)" stroke-width="3" stroke-dasharray="6 6"><animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="18s" repeatCount="indefinite"/></circle><circle cx="53" cy="32" r="4" fill="#22d3ee"/><circle cx="14" cy="21" r="4" fill="#a78bfa"/><circle cx="22" cy="50" r="4" fill="#fb923c"/></svg>
+      DevTeam
+    </a>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="#come">How it works</a></li>
+      <li><a href="#team">The team</a></li>
+      <li><a href="#flusso">The flow</a></li>
+      <li><a href="#comandi">Commands</a></li>
+      <li><a href="#installa">Install</a></li>
+      <li><a href="#configura">Configure</a></li>
+      <li><a href="#guardrail">Guardrail</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn sm" href="https://github.com/iamdex/devteam" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <a class="btn sm lang" href="../" hreflang="it" lang="it" aria-label="Versione italiana">IT</a>
+      <button class="burger" id="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow fade-up" style="animation-delay:.1s"><span class="pill">v0.3.0</span> Claude Code plugin · agent teams</span>
+      <h1 id="hero-title">A <span class="grad-text">senior</span> dev team. Made of agents.</h1>
+      <p class="lead fade-up" style="animation-delay:1s"><b>13 specialists</b> — product, growth, architecture, backend, data, web, Expo, SwiftUI, devops, app stores, QA, security, Claude platform — that <b>talk to each other</b>, split the files, challenge each other's ideas and never close a task until the tests are green. You approve the plan. They execute it.</p>
+      <div class="hero-ctas fade-up" style="animation-delay:1.2s">
+        <a class="btn primary" href="#installa">Install in 2 minutes →</a>
+        <a class="btn" href="#flusso">See how it works</a>
+      </div>
+      <div class="hero-stats fade-up" style="animation-delay:1.4s">
+        <div><b data-count="13">0</b>senior agents</div>
+        <div><b data-count="7">0</b>commands</div>
+        <div><b data-count="3">0</b>quality hooks</div>
+        <div><b data-count="10">0</b>stack skills</div>
+      </div>
+    </div>
+    <div class="fade-up" style="animation-delay:.7s">
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>~/progetti/app — claude</span></div>
+        <div class="term-body" id="hero-term"></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><i></i>scroll</div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="marquee"></div></div>
+
+<!-- ================= COME FUNZIONA ================= -->
+<section id="come">
+  <div class="wrap">
+    <div class="kicker reveal">The idea in 30 seconds</div>
+    <h2 class="reveal d1">Not an assistant.<br><span class="grad-text">An organization.</span></h2>
+    <p class="sub reveal d2">On its own, Claude Code is a great developer. DevTeam turns it into a team: every agent has <b style="color:var(--text)">a single responsibility</b>, a model that fits the role and a protocol to communicate. They work in parallel thanks to Claude Code <em>agent teams</em> — a mailbox and a shared task list.</p>
+
+    <div class="roles3">
+      <div class="rolecard reveal d1" style="--accent:#fb923c">
+        <div class="ico" style="background:rgba(251,146,60,.12)">👤</div>
+        <div class="big">You</div>
+        <h3>Product owner</h3>
+        <p>Describe what you want, approve the plan, decide. Commit, push, deploy and remote migrations always stay with you: the team prepares, you press the button.</p>
+      </div>
+      <div class="rolecard reveal d2" style="--accent:#a78bfa">
+        <div class="ico" style="background:rgba(167,139,250,.12)">🧭</div>
+        <div class="big">The main session</div>
+        <h3>Tech Lead</h3>
+        <p>Sizes the work, picks who's needed (usually 3–5 roles), writes complete briefs, asks for your go-ahead, coordinates and finally hands you a summary with a proposed commit.</p>
+      </div>
+      <div class="rolecard reveal d3" style="--accent:#22d3ee">
+        <div class="ico" style="background:rgba(34,211,238,.12)">⚡</div>
+        <div class="big">The teammates</div>
+        <h3>Senior specialists</h3>
+        <p>Each one owns specific files, communicates with typed messages and goes through automatic gates. QA and security verify before you see the result.</p>
+      </div>
+    </div>
+    <div class="arrow-row reveal">
+      <span>generic and reusable across all projects</span>
+      <span>repo context in <b style="color:var(--text)">CLAUDE.md</b></span>
+      <span>gates in <b style="color:var(--text)">.claude/devteam.json</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section id="team" style="padding-top:40px">
+  <div class="wrap">
+    <div class="kicker reveal">The team</div>
+    <h2 class="reveal d1">13 roles. <span class="grad-text">Zero overlap.</span></h2>
+    <p class="sub reveal d2">Every role is a file in <span class="inline-code">plugins/devteam/agents/</span> with prompt, model and tools. Opus where judgment matters (product, architecture, verification), Sonnet where execution speed matters. Click a card for details.</p>
+
+    <div class="filters reveal" id="filters">
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="strategia">Strategy</button>
+      <button class="chip" data-f="design">Design</button>
+      <button class="chip" data-f="build">Build</button>
+      <button class="chip" data-f="ops">Ops &amp; release</button>
+      <button class="chip" data-f="qualita">Quality</button>
+      <button class="chip" data-f="opus">Opus only</button>
+    </div>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+</section>
+
+<!-- ================= FLOW ================= -->
+<section id="flusso">
+  <div class="wrap">
+    <div class="kicker reveal">The flow · /devteam:feature</div>
+    <h2 class="reveal d1">From request to commit,<br><span class="grad-text">in six steps.</span></h2>
+    <p class="sub reveal d2">Write one sentence. The team does the rest — but nothing starts without your go-ahead. Scroll and watch what happens in the terminal.</p>
+
+    <div class="flow">
+      <div class="steps" id="steps">
+        <div class="progress" id="steps-progress"></div>
+        <div class="step" data-i="0">
+          <div class="num">01</div>
+          <h3>Understand and size</h3>
+          <p>The lead reads the request and <span class="inline-code">CLAUDE.md</span>. If the job is small it tells you and does it alone — a team costs more tokens. If it's more an idea than a spec, <b>product</b> first writes a brief with acceptance criteria.</p>
+          <div class="who"><span class="tag">lead</span><span class="tag">product</span></div>
+        </div>
+        <div class="step" data-i="1">
+          <div class="num">02</div>
+          <h3>Design and contracts</h3>
+          <p><b>architect</b> explores the code, picks the simplest approach and writes the contracts: API, types, schema, env. Then it splits the work into tasks, each with an <b>owner</b>, <b>files</b> and <b>acceptance criteria</b>. Two tasks never own the same file.</p>
+          <div class="who"><span class="tag">architect</span></div>
+        </div>
+        <div class="step" data-i="2">
+          <div class="num">03</div>
+          <h3>Your approval</h3>
+          <p>The lead presents plan, team, tasks and risks. You can ask for changes, drop roles, switch models. <b>Nothing starts without your go-ahead.</b></p>
+          <div class="gate">⏸ human gate — you decide</div>
+        </div>
+        <div class="step" data-i="3">
+          <div class="num">04</div>
+          <h3>Parallel build</h3>
+          <p>Teammates work at the same time and message each other with typed messages: <span class="msgtag" style="color:var(--cyan)">[CONTRACT]</span><span class="msgtag" style="color:var(--yellow)">[QUESTION]</span><span class="msgtag" style="color:var(--red)">[BLOCKER]</span><span class="msgtag" style="color:var(--green)">[HANDOFF]</span>. <b>qa</b> writes tests against the contracts while the others implement.</p>
+          <div class="who"><span class="tag">backend</span><span class="tag">data</span><span class="tag">frontend</span><span class="tag">qa</span></div>
+        </div>
+        <div class="step" data-i="4">
+          <div class="num">05</div>
+          <h3>Verification</h3>
+          <p>Every implementation task passes the automatic gate (typecheck, lint, unit tests). Then <b>qa</b> gives a PASS/FAIL verdict mapped to the acceptance criteria, with evidence. <b>security</b> joins when auth, data, payments, LLMs or infra are touched.</p>
+          <div class="who"><span class="tag">qa</span><span class="tag">security</span></div>
+        </div>
+        <div class="step" data-i="5">
+          <div class="num">06</div>
+          <h3>Summary and proposed commit</h3>
+          <p>What was done, which files, which commands were run, open points and a ready commit message. The team shuts down. <b>Commit, push, deploy and remote migrations stay with you.</b></p>
+          <div class="who"><span class="tag">lead</span></div>
+        </div>
+      </div>
+      <div class="flow-term">
+        <div class="term">
+          <div class="term-bar"><i></i><i></i><i></i><span id="flow-title">lead · /devteam:feature</span></div>
+          <div class="term-body" id="flow-term"></div>
+        </div>
+        <p style="font-family:var(--mono);font-size:12.5px;color:var(--dim);margin-top:14px">In the agents panel: <kbd style="color:var(--text)">↑/↓</kbd> pick a teammate · <kbd style="color:var(--text)">Invio</kbd> talk to it directly · <kbd style="color:var(--text)">Ctrl+T</kbd> task list</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMMANDS ================= -->
+<section id="comandi">
+  <div class="wrap">
+    <div class="kicker reveal">Commands</div>
+    <h2 class="reveal d1">Seven commands.<br><span class="grad-text">Each one is a different team.</span></h2>
+    <p class="sub reveal d2">Two you run once, the rest every day. Each command assembles the right squad for that kind of work.</p>
+    <div class="cmds reveal d2">
+      <div class="cmd-list" id="cmd-list"></div>
+      <div class="cmd-detail">
+        <p class="cmd-desc" id="cmd-desc"></p>
+        <div class="term">
+          <div class="term-bar"><i></i><i></i><i></i><span id="cmd-title"></span></div>
+          <div class="term-body" id="cmd-term"></div>
+        </div>
+      </div>
+    </div>
+    <p class="reveal" style="color:var(--muted);margin-top:26px;font-size:15px">💡 Agents also work on their own, as regular subagents: <span class="inline-code">use devteam:security-reviewer to check src/auth</span></p>
+  </div>
+</section>
+
+<!-- ================= INSTALL ================= -->
+<section id="installa">
+  <div class="wrap">
+    <div class="kicker reveal">Installation</div>
+    <h2 class="reveal d1">Ready in <span class="grad-text">three steps.</span></h2>
+    <p class="sub reveal d2">The repo is public: no credentials needed. Once per machine, once per project, then you work.</p>
+
+    <div class="install">
+      <div class="icard reveal d1">
+        <div class="n">01</div>
+        <div class="where">in Claude Code</div>
+        <h3>Add the marketplace and install</h3>
+        <p>Register the <code class="inline-code">espertini-devteam</code> marketplace and install the plugin.</p>
+        <div class="code"><span class="p">/plugin</span> marketplace add <span class="c">iamdex/devteam</span>
+<span class="p">/plugin</span> install <span class="c">devteam@espertini-devteam</span><button class="copy" data-copy="/plugin marketplace add iamdex/devteam&#10;/plugin install devteam@espertini-devteam" aria-label="Copy">⧉</button></div>
+      </div>
+      <div class="icard reveal d2">
+        <div class="n">02</div>
+        <div class="where">once per machine</div>
+        <h3>Setup and restart</h3>
+        <p>Enables agent teams (experimental, off by default), picks the display mode and proposes safe permissions. Then <b style="color:var(--text)">restart Claude Code</b>.</p>
+        <div class="code"><span class="p">/devteam:setup</span>
+<span class="d"># → restart Claude Code</span><button class="copy" data-copy="/devteam:setup" aria-label="Copy">⧉</button></div>
+      </div>
+      <div class="icard reveal d3">
+        <div class="n">03</div>
+        <div class="where">once per project</div>
+        <h3>Onboard the repo</h3>
+        <p>Analyzes stack, commands and conventions. Writes the <code class="inline-code">## DevTeam</code> section in <code class="inline-code">CLAUDE.md</code> and <code class="inline-code">.claude/devteam.json</code>. Review them and commit them.</p>
+        <div class="code"><span class="p">/devteam:onboard</span>
+<span class="d"># → review and commit the 2 files</span><button class="copy" data-copy="/devteam:onboard" aria-label="Copy">⧉</button></div>
+      </div>
+    </div>
+
+    <div class="req reveal">
+      <b style="color:var(--text)">Requirements:</b>
+      <span class="tag">Claude Code ≥ 2.1.32 (tested 2.1.325)</span>
+      <span class="tag">jq or python3 for the hooks</span>
+      <span class="tag">tmux — only for split panes</span>
+    </div>
+    <div class="note reveal"><b>Why is setup needed?</b> A plugin can't set environment variables by itself. <span class="inline-code">/devteam:setup</span> adds <span class="inline-code">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</span> to your <span class="inline-code">~/.claude/settings.json</span>, showing every change as a diff before writing it. Prefer a local folder? <span class="inline-code">/plugin marketplace add /path/to/devteam</span></div>
+  </div>
+</section>
+
+<!-- ================= CONFIG ================= -->
+<section id="configura">
+  <div class="wrap">
+    <div class="kicker reveal">Configuration</div>
+    <h2 class="reveal d1">One generic team.<br><span class="grad-text">One context per repo.</span></h2>
+    <p class="sub reveal d2">The team is the same on every project. What changes lives in four places. Hover (or tap) the keys to see what they do.</p>
+
+    <div class="cfg-tabs reveal" id="cfg-tabs">
+      <button class="cfg-tab on" data-t="gate">.claude/devteam.json</button>
+      <button class="cfg-tab" data-t="claudemd">CLAUDE.md</button>
+      <button class="cfg-tab" data-t="settings">~/.claude/settings.json</button>
+      <button class="cfg-tab" data-t="models">role models</button>
+    </div>
+
+    <!-- devteam.json -->
+    <div class="cfg-pane on" data-p="gate">
+<div class="json" id="json-gate">{
+  <span class="key" data-k="gateTasks">"gateTasks"</span><span class="pn">:</span> <span class="bool">true</span><span class="pn">,</span>
+  <span class="key" data-k="requireTaskOwnership">"requireTaskOwnership"</span><span class="pn">:</span> <span class="bool">true</span><span class="pn">,</span>
+  <span class="key" data-k="checkTimeoutSeconds">"checkTimeoutSeconds"</span><span class="pn">:</span> <span class="num">600</span><span class="pn">,</span>
+  <span class="key" data-k="skipGatePattern">"skipGatePattern"</span><span class="pn">:</span> <span class="str">"^(review|plan|design|research|</span>
+<span class="str">     investigate|analy[sz]e|verify|document|explore)\\b"</span><span class="pn">,</span>
+  <span class="key" data-k="checks">"checks"</span><span class="pn">: [</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"typecheck"</span><span class="pn">,</span>  <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm typecheck"</span> <span class="pn">},</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"lint"</span><span class="pn">,</span>       <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm lint"</span> <span class="pn">},</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"unit tests"</span><span class="pn">,</span> <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm test"</span> <span class="pn">}</span>
+  <span class="pn">],</span>
+  <span class="key" data-k="guard">"guard"</span><span class="pn">:</span> <span class="bool">true</span>  <span class="cm">// optional, default true</span>
+<span class="pn">}</span></div>
+      <div class="explain" id="explain-gate"></div>
+    </div>
+
+    <!-- CLAUDE.md -->
+    <div class="cfg-pane" data-p="claudemd">
+<div class="json" id="json-claudemd"><span class="key" data-k="section">## DevTeam</span>
+<span class="cm">&lt;!-- Generated by /devteam:onboard. Keep it short: every teammate loads it. --&gt;</span>
+
+<span class="key" data-k="stack">### Stack</span>
+- Runtime: <span class="str">Node 22 + TypeScript 5 (strict)</span>
+- Data: <span class="str">Supabase (Postgres + pgvector)</span>
+- Client: <span class="str">Next.js / Expo + Expo Router / SwiftUI</span>
+- Deploy: <span class="str">Docker → Dokploy on VPS</span>
+
+<span class="key" data-k="commands">### Commands</span>
+| Typecheck | <span class="num">`pnpm typecheck`</span> |
+| Unit tests | <span class="num">`pnpm test`</span> |  <span class="cm">…</span>
+
+<span class="key" data-k="conventions">### Conventions</span>
+- <span class="str">folder structure, errors, naming, commits</span>
+
+<span class="key" data-k="ownership">### Ownership map</span>
+| <span class="num">`apps/api/**`</span>              | backend  |
+| <span class="num">`supabase/migrations/**`</span>   | data     |
+| <span class="num">`apps/web/**`</span>              | frontend |
+| <span class="num">`**/*.test.ts`, `e2e/**`</span>  | qa       |  <span class="cm">…</span>
+
+<span class="key" data-k="sensitive">### Sensitive areas</span>
+- <span class="str">auth, payments/webhooks, tenant isolation, LLM prompts</span>
+
+<span class="key" data-k="never">### Never without Dex</span>
+- <span class="str">push, deploy, remote migrations, VPS/DNS, paid services</span></div>
+      <div class="explain" id="explain-claudemd"></div>
+    </div>
+
+    <!-- settings.json -->
+    <div class="cfg-pane" data-p="settings">
+<div class="json" id="json-settings">{
+  <span class="key" data-k="env">"env"</span><span class="pn">: {</span>
+    <span class="key" data-k="agentteams">"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"</span><span class="pn">:</span> <span class="str">"1"</span>
+  <span class="pn">},</span>
+  <span class="key" data-k="teammateMode">"teammateMode"</span><span class="pn">:</span> <span class="str">"auto"</span><span class="pn">,</span>   <span class="cm">// optional</span>
+  <span class="key" data-k="permissions">"permissions"</span><span class="pn">: {</span>
+    <span class="key" data-k="allow">"allow"</span><span class="pn">: [</span>
+      <span class="str">"Bash(git status:*)"</span><span class="pn">,</span> <span class="str">"Bash(git diff:*)"</span><span class="pn">,</span>
+      <span class="str">"Bash(git log:*)"</span><span class="pn">,</span>    <span class="str">"Bash(pnpm typecheck:*)"</span><span class="pn">,</span>
+      <span class="str">"Bash(pnpm lint:*)"</span><span class="pn">,</span>  <span class="str">"Bash(pnpm test:*)"</span><span class="pn">,</span>
+      <span class="str">"Bash(dotnet build:*)"</span><span class="pn">,</span> <span class="str">"Bash(dotnet test:*)"</span>
+    <span class="pn">]</span>
+  <span class="pn">}</span>
+<span class="pn">}</span>
+
+<span class="cm">// Cloud sessions: in the PROJECT's .claude/settings.json</span>
+{
+  <span class="key" data-k="ekm">"extraKnownMarketplaces"</span><span class="pn">: {</span>
+    <span class="str">"espertini-devteam"</span><span class="pn">: {</span> <span class="str">"source"</span><span class="pn">: {</span>
+      <span class="str">"source"</span><span class="pn">:</span> <span class="str">"github"</span><span class="pn">,</span> <span class="str">"repo"</span><span class="pn">:</span> <span class="str">"iamdex/devteam"</span> <span class="pn">} }</span>
+  <span class="pn">},</span>
+  <span class="key" data-k="enabledPlugins">"enabledPlugins"</span><span class="pn">: {</span> <span class="str">"devteam@espertini-devteam"</span><span class="pn">:</span> <span class="bool">true</span> <span class="pn">}</span>
+<span class="pn">}</span></div>
+      <div class="explain" id="explain-settings"></div>
+    </div>
+
+    <!-- models -->
+    <div class="cfg-pane" data-p="models">
+<div class="json" id="json-models"><span class="cm"># plugins/devteam/agents/architect.md</span>
+<span class="pn">---</span>
+<span class="key" data-k="m_name">name</span><span class="pn">:</span> <span class="str">architect</span>
+<span class="key" data-k="m_desc">description</span><span class="pn">:</span> <span class="str">Senior software architect. Use to design…</span>
+<span class="key" data-k="m_model">model</span><span class="pn">:</span> <span class="num">opus</span>
+<span class="key" data-k="m_effort">effort</span><span class="pn">:</span> <span class="num">high</span>
+<span class="key" data-k="m_color">color</span><span class="pn">:</span> <span class="str">purple</span>
+<span class="pn">---</span>
+
+<span class="key" data-k="m_body">You are the team's Senior Software Architect…</span>
+
+<span class="cm">## Team protocol</span>
+<span class="cm">[CONTRACT] [QUESTION] [BLOCKER] [HANDOFF]</span></div>
+      <div class="explain" id="explain-models"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GUARDRAIL ================= -->
+<section id="guardrail">
+  <div class="wrap">
+    <div class="kicker reveal">Quality gates and guardrails</div>
+    <h2 class="reveal d1">Free to work.<br><span class="grad-text">Not free to destroy.</span></h2>
+    <p class="sub reveal d2">Three hooks run under every session. They're not suggestions in a prompt: they're scripts that actually block.</p>
+
+    <div class="guard">
+      <div class="hooks">
+        <div class="hook reveal d1">
+          <div class="hi" style="background:rgba(34,211,238,.1)">📋</div>
+          <div><code>TaskCreated</code><h4>Every task has an owner</h4><p>Inside a team, every task must have <span class="inline-code">Owner:</span>, <span class="inline-code">Files:</span> and <span class="inline-code">Acceptance:</span> in its description (review/plan/research only <span class="inline-code">Owner:</span>). That's what keeps two agents off the same file.</p></div>
+        </div>
+        <div class="hook reveal d2">
+          <div class="hi" style="background:rgba(74,222,128,.1)">✅</div>
+          <div><code>TaskCompleted</code><h4>No "done" until it's green</h4><p>Before an implementation task is closed, it runs the <span class="inline-code">checks</span> in <span class="inline-code">.claude/devteam.json</span>. If they fail, the task stays open and the agent receives the error output.</p></div>
+        </div>
+        <div class="hook reveal d3">
+          <div class="hi" style="background:rgba(248,113,113,.1)">🛡️</div>
+          <div><code>PreToolUse · Bash</code><h4>Irreversible commands go through you</h4><p>Blocks anything that destroys work or touches production and asks to go through you. Disable it per project with <span class="inline-code">"guard": false</span> or per session with <span class="inline-code">DEVTEAM_GUARD=0</span>.</p></div>
+        </div>
+      </div>
+      <div class="guard-term reveal d2">
+        <div class="term">
+          <div class="term-bar"><i></i><i></i><i></i><span>teammate · backend</span></div>
+          <div class="term-body" id="guard-term"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chips-wrap reveal" id="blocked-list"></div>
+  </div>
+</section>
+
+<!-- ================= REMOTE ================= -->
+<section id="remoto">
+  <div class="wrap">
+    <div class="kicker reveal">iPad, phone, cloud</div>
+    <h2 class="reveal d1">The team in your pocket.</h2>
+    <p class="sub reveal d2">The Claude app for iOS and Android has a <b style="color:var(--text)">Code</b> tab, but the full team only works where Claude Code actually runs. Two ways.</p>
+
+    <div class="remote">
+      <div class="rcard best reveal d1">
+        <span class="badge">RECOMMENDED</span>
+        <h3>Remote Control</h3>
+        <p class="tl">Full team. Claude Code runs on a machine of yours, the tablet is just the window.</p>
+        <div class="devices"><span class="dev">🖥 server / Mac</span><span class="wire"></span><span class="dev">📱 Claude app</span></div>
+        <ol>
+          <li>On the machine: Claude Code <b>≥ 2.1.51</b>, then the plugin and <span class="inline-code">/devteam:setup</span>.</li>
+          <li>Clone the project and run <span class="inline-code">/devteam:onboard</span> the first time.</li>
+          <li>Start inside <b>tmux</b> so the session survives:
+            <div class="code" style="margin-top:10px">tmux new -s devteam
+claude --remote-control<button class="copy" data-copy="tmux new -s devteam&#10;claude --remote-control" aria-label="Copy">⧉</button></div>
+            <span style="font-size:13.5px">From an open session: <span class="inline-code">/remote-control</span> or <span class="inline-code">/rc</span>.</span>
+          </li>
+          <li>On the tablet: Claude app → <b>Code</b> → pick the session. Run <span class="inline-code">/devteam:feature</span> and approve from there.</li>
+        </ol>
+        <ul class="check">
+          <li class="y">agent teams, hooks and guardrails just like local</li>
+          <li class="y">all 7 commands</li>
+        </ul>
+      </div>
+      <div class="rcard reveal d2">
+        <h3>Cloud sessions</h3>
+        <p class="tl">Subagents, no team. They run on Anthropic's infrastructure, no machine of yours.</p>
+        <div class="devices"><span class="dev">☁️ Anthropic cloud</span><span class="wire" style="animation-duration:2s"></span><span class="dev">🌐 browser / app</span></div>
+        <ol>
+          <li>Declare the plugin in the project's <span class="inline-code">.claude/settings.json</span> (committed) — see the <a href="#configura" data-goto="settings" style="color:var(--cyan)">settings.json</a> tab.</li>
+          <li>Open the cloud session on the repo: the plugin loads by itself.</li>
+          <li>Use the commands that adapt to subagents.</li>
+        </ol>
+        <ul class="check">
+          <li class="y"><span class="inline-code">review</span>, <span class="inline-code">debug</span>, <span class="inline-code">strategy</span>, <span class="inline-code">release</span> adapt by themselves</li>
+          <li class="y">every agent usable as a subagent</li>
+          <li class="n">agent teams not available in the cloud</li>
+          <li class="n"><span class="inline-code">/devteam:feature</span> needs Remote Control or local</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LIMITS ================= -->
+<section id="limiti">
+  <div class="wrap">
+    <div class="kicker reveal">Costs and limits</div>
+    <h2 class="reveal d1">Honest about what it costs<br><span class="grad-text">and what it doesn't do.</span></h2>
+
+    <div class="meter reveal d1">
+      <h3>How many teammates?</h3>
+      <p>Every teammate is a full Claude session: tokens grow with the number of agents. Drag and see.</p>
+      <div class="mrow"><input type="range" min="1" max="13" value="4" id="tm-range" aria-label="Number of teammates"><output id="tm-out">4</output></div>
+      <div class="bars" id="tm-bars"></div>
+      <div class="verdict" id="tm-verdict"></div>
+    </div>
+
+    <div class="limits">
+      <div class="lcard reveal d1"><div class="em">🧪</div><h4>Experimental</h4><p><span class="inline-code">/resume</span> doesn't restore in-process teammates, task status sometimes lags, one team per session.</p></div>
+      <div class="lcard reveal d2"><div class="em">💬</div><h4>Interactive only</h4><p>Agent teams only work in interactive sessions, not with <span class="inline-code">claude -p</span> or the Agent SDK. An autonomous team on a server is a different architecture (v2).</p></div>
+      <div class="lcard reveal d3"><div class="em">🎯</div><h4>On-demand roles</h4><p>The lead only activates those with a task. <b>growth</b> joins features only when there's a commercial side (copy, pricing, stores).</p></div>
+      <div class="lcard reveal d1"><div class="em">🙈</div><h4>No shared memory</h4><p>Teammates don't see the lead's conversation: that's why the lead writes complete briefs and stable context lives in <span class="inline-code">CLAUDE.md</span>.</p></div>
+      <div class="lcard reveal d2"><div class="em">🪆</div><h4>No teams within teams</h4><p>Teammates can't create other teammates. The hierarchy is flat: one lead, N specialists.</p></div>
+      <div class="lcard reveal d3"><div class="em">🏷️</div><h4>Named subagents</h4><p>While agent teams are on, subagents that Claude gives a name start as teammates. To get plain subagents back in a project: set the variable to <span class="inline-code">"0"</span> in <span class="inline-code">.claude/settings.local.json</span>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXTEND ================= -->
+<section id="estendi">
+  <div class="wrap">
+    <div class="kicker reveal">Under the hood</div>
+    <h2 class="reveal d1">Everything is a file.<br><span class="grad-text">Everything extends.</span></h2>
+    <div class="extend">
+<div class="tree reveal d1"><span class="h">.claude-plugin/marketplace.json</span>   <span class="d">marketplace "espertini-devteam"</span>
+<span class="h">plugins/devteam/</span>
+  <span class="f">.claude-plugin/plugin.json</span>
+  <span class="f">agents/</span>      <span class="d">13 senior roles (prompt, model, tools)</span>
+  <span class="f">skills/</span>      <span class="d">commands: feature, review, debug,</span>
+               <span class="d">strategy, release, onboard, setup</span>
+               <span class="d">+ knowledge: definition-of-done,</span>
+               <span class="d">code-review-checklist, stack-typescript,</span>
+               <span class="d">stack-dotnet, stack-supabase,</span>
+               <span class="d">stack-react-web, stack-expo,</span>
+               <span class="d">stack-swiftui, stack-voice-agents,</span>
+               <span class="d">stack-docker-dokploy</span>
+  <span class="f">hooks/hooks.json</span>
+  <span class="f">scripts/</span>     <span class="d">hook (bash + jq/python3/node)</span>
+  <span class="f">templates/</span>   <span class="d">CLAUDE.devteam.md, devteam.json</span>
+<span class="h">tests/hooks.sh</span>                   <span class="d">hook tests</span></div>
+      <div class="ext-list">
+        <div class="ext reveal d1"><h4>➕ New role</h4><p>Add <span class="inline-code">agents/&lt;role&gt;.md</span> copying the "Team protocol" section, then add it to the table in the <span class="inline-code">feature</span> skill.</p></div>
+        <div class="ext reveal d2"><h4>📚 New stack conventions</h4><p>A <span class="inline-code">skills/stack-&lt;name&gt;/SKILL.md</span> skill with a precise <span class="inline-code">description</span> of when to use it: agents load it on their own when needed.</p></div>
+        <div class="ext reveal d3"><h4>🔁 After every change</h4>
+<div class="code" style="margin-top:12px">claude plugin validate ./plugins/devteam
+bash tests/hooks.sh
+<span class="d"># bump "version" in plugin.json, then</span>
+<span class="p">/plugin</span> update<button class="copy" data-copy="claude plugin validate ./plugins/devteam&#10;bash tests/hooks.sh" aria-label="Copy">⧉</button></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="wrap">
+    <div class="kicker reveal">FAQ</div>
+    <h2 class="reveal d1">Frequently asked questions</h2>
+    <div class="faq">
+      <details class="reveal"><summary>Do I have to use all 13 agents every time?</summary><p>No, by design. The lead only activates the roles that have a task — usually 3–5. For a small job it tells you and does it alone, because a team costs more tokens than a single session.</p></details>
+      <details class="reveal"><summary>How do I change a role's model?</summary><p>Edit <span class="inline-code">model:</span> in the frontmatter of the file in <span class="inline-code">plugins/devteam/agents/</span>, or ask the lead for a specific model when it launches the team ("use Opus for backend too").</p></details>
+      <details class="reveal"><summary>The gate blocks every task, what's going on?</summary><p>The project is probably "red" to begin with: typecheck, lint or tests already fail before the team touches anything. Fix it first, or temporarily set <span class="inline-code">"gateTasks": false</span> in <span class="inline-code">.claude/devteam.json</span>. Only put fast, reliable checks in the gate: <b>qa</b> runs the e2e tests.</p></details>
+      <details class="reveal"><summary>Can I talk to a teammate directly?</summary><p>Yes. In in-process mode: <span class="inline-code">↑/↓</span> to select it in the agents panel, <span class="inline-code">Enter</span> to open it, <span class="inline-code">Ctrl+T</span> for the task list. In auto mode inside tmux or iTerm2 every teammate gets its own pane.</p></details>
+      <details class="reveal"><summary>Can the team push or deploy by itself?</summary><p>No. The guardrail blocks force pushes, destructive resets, <span class="inline-code">supabase db push</span>, <span class="inline-code">ssh</span>/<span class="inline-code">scp</span>/<span class="inline-code">rsync</span>, <span class="inline-code">npm publish</span>, <span class="inline-code">eas submit</span>, fastlane and the like. The team prepares everything — proposed commit, submission checklist — and you execute.</p></details>
+      <details class="reveal"><summary>Does it work with my stack?</summary><p>The team is generic: it reads your <span class="inline-code">CLAUDE.md</span> and follows the conventions it finds. It also ships knowledge skills for TypeScript, .NET, Supabase, React/Next.js, Expo, SwiftUI, voice agents and Docker/Dokploy. For anything else, add a <span class="inline-code">stack-&lt;name&gt;</span> skill.</p></details>
+      <details class="reveal"><summary>Why do some roles use Opus and others Sonnet?</summary><p>Opus where judgment matters: deciding what to build (product, growth), how to build it (architect) and whether it's really right (qa, security). Sonnet where what matters is executing a clear plan with defined contracts, well and fast.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL ================= -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="reveal">Stop coding alone.<br><span class="grad-text">Start leading a team.</span></h2>
+    <p class="sub reveal d1">One plugin, reusable across all projects. Open source, MIT license.</p>
+    <div class="reveal d2"><div class="big-cmd"><span><span class="p">/plugin</span> marketplace add iamdex/devteam</span><button class="copy" data-copy="/plugin marketplace add iamdex/devteam" aria-label="Copy">⧉</button></div></div>
+    <div class="hero-ctas reveal d3" style="margin-top:28px">
+      <a class="btn primary" href="#installa">Get started →</a>
+      <a class="btn" href="https://github.com/iamdex/devteam" target="_blank" rel="noopener">Code on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>DevTeam · MIT · by <a href="https://espertini.com" target="_blank" rel="noopener">Davide Espertini</a></span>
+    <span><a href="https://github.com/iamdex/devteam" target="_blank" rel="noopener">github.com/iamdex/devteam</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+(() => {
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const sleep = ms => new Promise(r => setTimeout(r, RM ? 0 : ms));
+
+/* ---------------- data ---------------- */
+const COLORS = {purple:'#a78bfa',blue:'#60a5fa',pink:'#f472b6',cyan:'#22d3ee',orange:'#fb923c',green:'#4ade80',yellow:'#facc15',red:'#f87171'};
+const AGENTS = [
+  {id:'product',type:'devteam:product-manager',name:'Product manager',model:'opus',color:'purple',area:'strategia',ini:'PM',
+   resp:'User and problem, MVP, user stories with acceptance criteria, UX flow, metrics.',
+   more:'Joins when the request is more an idea than a spec. Writes the brief before any code is written. Owns <code>docs/product/**</code>.'},
+  {id:'growth',type:'devteam:growth-strategist',name:'Growth strategist',model:'opus',color:'orange',area:'strategia',ini:'GR',
+   resp:'Positioning, pricing, go-to-market, funnels, copy, selling to SMBs, ASO.',
+   more:'Joins features only when there\'s a commercial side (copy, pricing, stores). Researches competitors and prices with sources. Owns <code>docs/gtm/**</code>.'},
+  {id:'architect',type:'devteam:architect',name:'Architect',model:'opus',color:'purple',area:'design',ini:'AR',
+   resp:'Design, contracts between layers, tasks with file ownership.',
+   more:'Writes no production code. Prefers boring technology and fewer moving parts. Every task: owner, files, dependencies, criteria. Owns <code>docs/design/**</code>.'},
+  {id:'backend',type:'devteam:backend-engineer',name:'Backend engineer',model:'sonnet',color:'blue',area:'build',ini:'BE',
+   resp:'APIs, logic, integrations, voice agents (TS/Node, .NET).',
+   more:'Implements against the architect\'s contracts and announces changes with <code>[CONTRACT]</code>. Owns <code>apps/api/**</code>, <code>src/server/**</code>.'},
+  {id:'data',type:'devteam:data-engineer',name:'Data engineer',model:'sonnet',color:'cyan',area:'build',ini:'DA',
+   resp:'Schema, migrations, RLS, pgvector, query performance.',
+   more:'Local migrations only: <code>supabase db push</code> is blocked by the guardrail. Owns <code>supabase/migrations/**</code>.'},
+  {id:'frontend',type:'devteam:frontend-engineer',name:'Frontend engineer',model:'sonnet',color:'green',area:'build',ini:'FE',
+   resp:'Web: React, Next.js, landing, dashboard, SEO.',
+   more:'Consumes the shared types and API contracts. Owns <code>apps/web/**</code>.'},
+  {id:'mobile',type:'devteam:mobile-engineer',name:'Mobile engineer',model:'sonnet',color:'green',area:'build',ini:'MO',
+   resp:'Expo/React Native: apps and games, EAS, push, in-app purchases.',
+   more:'Prepares the builds; <code>eas submit</code> stays with you. Owns <code>apps/mobile/**</code>.'},
+  {id:'ios',type:'devteam:ios-engineer',name:'iOS engineer',model:'sonnet',color:'blue',area:'build',ini:'iOS',
+   resp:'Native Swift/SwiftUI for iOS and macOS, StoreKit 2, native modules for Expo.',
+   more:'Goes native when Expo isn\'t enough. Owns <code>apps/ios/**</code>, <code>modules/*/ios/**</code>.'},
+  {id:'devops',type:'devteam:devops-engineer',name:'DevOps engineer',model:'sonnet',color:'orange',area:'ops',ini:'OPS',
+   resp:'Docker, Dokploy, CI, env, backups — prepares, never runs in prod.',
+   more:'Writes Dockerfiles, compose files and workflows. No <code>ssh</code> or deploys without you. Owns <code>Dockerfile*</code>, <code>.github/workflows/**</code>.'},
+  {id:'store',type:'devteam:store-release-manager',name:'Store release manager',model:'sonnet',color:'cyan',area:'ops',ini:'ST',
+   resp:'App Store Connect and Play Console: listings, privacy labels/Data safety, IAP, TestFlight, review and rejections, rollout.',
+   more:'Leads <code>/devteam:release</code> and ends with a submission checklist you execute. Owns <code>store/**</code>, <code>fastlane/metadata/**</code>.'},
+  {id:'qa',type:'devteam:qa-engineer',name:'QA engineer',model:'opus',color:'yellow',area:'qualita',ini:'QA',
+   resp:'Tests, edge cases, PASS/FAIL verdict with evidence.',
+   more:'Writes tests against the contracts while the others implement, runs e2e, maps the verdict to the acceptance criteria. Owns <code>**/*.test.ts</code>, <code>e2e/**</code>.'},
+  {id:'security',type:'devteam:security-reviewer',name:'Security reviewer',model:'opus',color:'red',area:'qualita',ini:'SEC',
+   resp:'Read-only security review, including OWASP for LLMs.',
+   more:'Never edits files. Always joins when auth, data, payments, LLMs or infra are touched — the "sensitive areas" in your CLAUDE.md.'},
+  {id:'claude',type:'devteam:claude-platform-specialist',name:'Claude platform specialist',model:'sonnet',color:'pink',area:'design',ini:'CL',
+   resp:'Claude API, Agent SDK, MCP, Claude Code — always checks the current docs.',
+   more:'Joins reviews when a change touches LLM/MCP code or Claude Code configuration. Doesn\'t trust memory: checks the documentation.'},
+];
+
+/* ---------------- nav ---------------- */
+const nav = $('#nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 30), {passive:true});
+$('#burger').onclick = () => $('#navlinks').classList.toggle('open');
+$$('#navlinks a').forEach(a => a.onclick = () => $('#navlinks').classList.remove('open'));
+const secs = $$('section[id]');
+const navIO = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) $$('#navlinks a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+}), {rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s => navIO.observe(s));
+
+/* ---------------- hero title split ---------------- */
+const ht = $('#hero-title');
+(function split(){
+  let i = 0;
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(w => {
+          if (!w) return;
+          if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+          const s = document.createElement('span'); s.className = 'split-word'; s.textContent = w;
+          s.style.animationDelay = (0.25 + i++ * 0.08) + 's'; frag.appendChild(s);
+        });
+        n.replaceWith(frag);
+      } else if (n.classList && n.classList.contains('grad-text')) {
+        n.classList.add('split-word'); n.style.animationDelay = (0.25 + i++ * 0.08) + 's';
+      } else walk(n);
+    });
+  };
+  walk(ht);
+})();
+
+/* ---------------- counters ---------------- */
+setTimeout(() => $$('[data-count]').forEach(el => {
+  const to = +el.dataset.count, t0 = performance.now(), d = RM ? 1 : 1400;
+  const tick = t => { const p = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}), 1400);
+
+/* ---------------- marquee ---------------- */
+const mq = ['<b>/devteam:feature</b> design → ok → build → verify','<b>[CONTRACT]</b> POST /api/invoices','<b>qa</b> PASS 12/12 criteria','<b>security</b> RLS verified','<b>guardrail</b> git push --force blocked','<b>/devteam:strategy</b> GO WITH CHANGES','<b>gate</b> typecheck ✓ lint ✓ test ✓','<b>/devteam:debug</b> 4 hypotheses, 1 survives','<b>architect</b> 0 files shared between tasks'];
+$('#marquee').innerHTML = [...mq, ...mq].map(t => `<span>${t}</span>`).join('');
+
+/* ---------------- typing engine ---------------- */
+// line: [html, delayAfter, typed?]
+async function play(el, lines, token) {
+  el.innerHTML = '';
+  for (const ln of lines) {
+    if (token && token.cancel) return;
+    const [html, wait = 260, typed = false] = ln;
+    const row = document.createElement('div');
+    el.appendChild(row);
+    if (typed && !RM) {
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      const txt = tmp.textContent; const prefix = html.match(/^<span class="p">[^<]*<\/span>/);
+      const pre = prefix ? prefix[0] : ''; const preTxt = prefix ? tmp.firstChild.textContent : '';
+      const body = txt.slice(preTxt.length);
+      for (let i = 0; i <= body.length; i++) {
+        if (token && token.cancel) return;
+        row.innerHTML = pre + '<span class="w">' + esc(body.slice(0, i)) + '</span><span class="cursor"></span>';
+        await sleep(22 + Math.random() * 30);
+      }
+      row.innerHTML = html;
+    } else row.innerHTML = html;
+    el.scrollTop = el.scrollHeight;
+    await sleep(wait);
+  }
+  if (!(token && token.cancel)) { const c = document.createElement('span'); c.className = 'cursor'; el.appendChild(c); }
+}
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ---------------- hero terminal ---------------- */
+const heroLines = [
+  ['<span class="p">❯</span> /devteam:feature recurring invoices with email reminders', 500, true],
+  ['<span class="d">lead</span>  Medium-large job: needs a team. Asking for a design.', 450],
+  ['<span class="k">●</span> <span class="w">architect</span> <span class="d">exploring apps/api, supabase/…</span>', 600],
+  ['<span class="c">[CONTRACT]</span> POST /api/invoices/recurring · schema recurring_invoices', 500],
+  ['<span class="d">lead</span>  Plan: 4 teammates · 9 tasks · 2 risks. <span class="y">Proceed? (y/n)</span>', 700],
+  ['<span class="p">❯</span> y', 400, true],
+  ['<span class="b">●</span> backend  <span class="c">●</span> data  <span class="g">●</span> frontend  <span class="y">●</span> qa   <span class="d">in parallel</span>', 600],
+  ['<span class="y">[QUESTION]</span> frontend → backend: is next_run in UTC?', 450],
+  ['<span class="g">[HANDOFF]</span> backend → qa: endpoints ready, contract unchanged', 450],
+  ['<span class="d">gate</span>  typecheck <span class="g">✓</span>  lint <span class="g">✓</span>  unit tests <span class="g">✓</span>', 450],
+  ['<span class="y">qa</span>     <span class="g">PASS</span> 7/7 acceptance criteria', 350],
+  ['<span class="r">security</span> no critical findings · RLS ok', 450],
+  ['<span class="d">lead</span>  Done. Proposed commit: <span class="w">feat: recurring invoices</span>', 3200],
+];
+(async function loopHero(){ while (true) { await play($('#hero-term'), heroLines); await sleep(1200); if (RM) break; } })();
+
+/* ---------------- hero network canvas ---------------- */
+(function net(){
+  const cv = $('#net'), ctx = cv.getContext('2d');
+  let W, H, DPR, cx, cy, R, RY, PX = 40;
+  const nodes = AGENTS.map((a, i) => ({...a, c: COLORS[a.color], ang: i / AGENTS.length * Math.PI * 2, r: 0}));
+  const packets = [];
+  const labels = ['[CONTRACT]','[QUESTION]','[HANDOFF]','[BLOCKER]','PASS','task'];
+  let mx = 0, my = 0;
+  function resize(){
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const wide = W > 980;
+    if (wide) {
+      // orbit around the terminal: the terminal *is* the lead
+      const tr = $('#hero-term').closest('.term').getBoundingClientRect(), hr = cv.getBoundingClientRect();
+      cx = tr.left - hr.left + tr.width / 2; cy = tr.top - hr.top + tr.height / 2;
+      R = tr.width / 2 + 34; RY = tr.height / 2 + 58; PX = 12;
+    } else { cx = W * 0.5; cy = H * 0.62; R = Math.min(W * 0.42, 260); RY = R * .8; PX = 40; }
+  }
+  setTimeout(resize, 1600);
+  resize(); addEventListener('resize', resize);
+  addEventListener('pointermove', e => { mx = (e.clientX / W - .5); my = (e.clientY / H - .5); }, {passive:true});
+  function spawn(){
+    const a = Math.random() < .45 ? -1 : (Math.random() * nodes.length | 0);
+    let b = Math.random() * nodes.length | 0; if (b === a) b = (b + 1) % nodes.length;
+    const col = a === -1 ? '#ffffff' : nodes[a].c;
+    packets.push({a, b, t: 0, sp: .006 + Math.random() * .006, c: col, label: Math.random() < .35 ? labels[Math.random() * labels.length | 0] : null});
+  }
+  let rot = 0, last = performance.now(), acc = 0, visible = true;
+  const RING = .88;
+  new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(cv);
+  function pos(i){
+    if (i === -1) return {x: cx + mx * PX / 2, y: cy + my * PX / 2};
+    const n = nodes[i];
+    const rr = R * (i % 2 ? 1 : RING) * (1 + Math.sin(rot * 3 + i) * .02);
+    return {x: cx + Math.cos(n.ang + rot) * rr + mx * PX, y: cy + Math.sin(n.ang + rot) * rr * (RY / R) + my * PX};
+  }
+  function frame(t){
+    const dt = Math.min(50, t - last); last = t;
+    if (visible) {
+      if (!RM) rot += dt * 0.00004;
+      acc += dt; if (acc > 380 && !RM) { acc = 0; spawn(); }
+      ctx.clearRect(0, 0, W, H);
+      const L = pos(-1);
+      // orbits
+      ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1;
+      [R, R * RING].forEach(r => { ctx.beginPath(); ctx.ellipse(L.x, L.y, r, r * RY / R, 0, 0, Math.PI * 2); ctx.stroke(); });
+      // spokes
+      nodes.forEach((n, i) => { const p = pos(i); const g = ctx.createLinearGradient(L.x, L.y, p.x, p.y); g.addColorStop(0, 'rgba(255,255,255,.08)'); g.addColorStop(1, n.c + '33'); ctx.strokeStyle = g; ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(p.x, p.y); ctx.stroke(); });
+      // packets
+      for (let k = packets.length - 1; k >= 0; k--) {
+        const pk = packets[k]; pk.t += pk.sp * dt / 16;
+        if (pk.t >= 1) { packets.splice(k, 1); const nb = nodes[pk.b]; nb.r = 1; continue; }
+        const A = pos(pk.a), B = pos(pk.b);
+        const mxp = (A.x + B.x) / 2 + (L.y - (A.y + B.y) / 2) * .25, myp = (A.y + B.y) / 2 + ((A.x + B.x) / 2 - L.x) * .25;
+        const e = pk.t, x = (1-e)*(1-e)*A.x + 2*(1-e)*e*mxp + e*e*B.x, y = (1-e)*(1-e)*A.y + 2*(1-e)*e*myp + e*e*B.y;
+        ctx.strokeStyle = pk.c + '55'; ctx.lineWidth = 1; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.quadraticCurveTo(mxp, myp, B.x, B.y); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = pk.c; ctx.shadowColor = pk.c; ctx.shadowBlur = 14; ctx.beginPath(); ctx.arc(x, y, 3.2, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+        if (pk.label && W > 600) { ctx.font = '500 10.5px JetBrains Mono, monospace'; ctx.fillStyle = pk.c; ctx.globalAlpha = Math.sin(e * Math.PI); ctx.fillText(pk.label, x + 8, y - 8); ctx.globalAlpha = 1; }
+      }
+      // nodes
+      nodes.forEach((n, i) => {
+        const p = pos(i); n.r *= .94;
+        const s = 7 + n.r * 6;
+        ctx.fillStyle = n.c + '22'; ctx.beginPath(); ctx.arc(p.x, p.y, s + 10, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = n.c; ctx.shadowColor = n.c; ctx.shadowBlur = 18 + n.r * 20; ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+        if (W > 600) { ctx.font = '500 11.5px JetBrains Mono, monospace'; ctx.fillStyle = 'rgba(233,236,245,.75)'; ctx.textAlign = 'center'; ctx.fillText(n.id, p.x, p.y + s + 18); ctx.textAlign = 'left'; }
+      });
+      // lead
+      const pulse = 1 + Math.sin(t / 600) * .06;
+      const lg = ctx.createRadialGradient(L.x, L.y, 0, L.x, L.y, 60 * pulse); lg.addColorStop(0, 'rgba(167,139,250,.5)'); lg.addColorStop(1, 'rgba(34,211,238,0)');
+      ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(L.x, L.y, 60 * pulse, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = 30; ctx.beginPath(); ctx.arc(L.x, L.y, 14, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.font = '700 12px JetBrains Mono, monospace'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('LEAD', L.x, L.y + 36); ctx.textAlign = 'left';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------------- team grid ---------------- */
+const grid = $('#team-grid');
+const leadCard = `<div class="agent lead-card reveal" data-area="all"><div class="agent-head"><div class="avatar">TL</div><div><h4>Tech Lead</h4><div class="type">main session</div></div></div><p>Coordinates, asks for your go-ahead, synthesizes. Sizes the work and decides who takes the field.</p><div class="meta"><span class="tag opus">Opus recommended</span><span class="tag">lead</span></div><div class="more"><div>Writes complete briefs because teammates don't see its conversation. At the end it shuts the team down and hands you the summary.</div></div></div>`;
+grid.innerHTML = leadCard + AGENTS.map((a, i) => `
+  <div class="agent reveal d${i % 4 + 1}" data-area="${a.area}" data-model="${a.model}" style="--c:${COLORS[a.color]}">
+    <div class="agent-head"><div class="avatar">${a.ini}</div><div><h4>${a.name}</h4><div class="type">${a.type}</div></div></div>
+    <p>${a.resp}</p>
+    <div class="meta"><span class="tag ${a.model}">${a.model === 'opus' ? 'Opus' : 'Sonnet'}</span><span class="tag">${a.id}</span></div>
+    <div class="more"><div>${a.more}</div></div>
+  </div>`).join('');
+$$('.agent', grid).forEach(card => {
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    card.style.setProperty('--mx', x + 'px'); card.style.setProperty('--my', y + 'px');
+    if (!RM && matchMedia('(hover:hover)').matches) card.style.transform = `perspective(800px) rotateX(${(y / r.height - .5) * -6}deg) rotateY(${(x / r.width - .5) * 6}deg) translateY(-4px)`;
+  });
+  card.addEventListener('pointerleave', () => card.style.transform = '');
+  card.addEventListener('click', () => card.classList.toggle('open'));
+});
+$$('#filters .chip').forEach(ch => ch.onclick = () => {
+  $$('#filters .chip').forEach(c => c.classList.remove('on')); ch.classList.add('on');
+  const f = ch.dataset.f;
+  $$('.agent', grid).forEach(card => {
+    const show = f === 'all' || card.dataset.area === 'all' || (f === 'opus' ? card.dataset.model === 'opus' : card.dataset.area === f);
+    card.classList.toggle('hide', !show);
+  });
+});
+
+/* ---------------- reveal ---------------- */
+const rIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rIO.unobserve(e.target); } }), {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+$$('.reveal').forEach(el => rIO.observe(el));
+
+/* ---------------- flow ---------------- */
+const FLOW = [
+  {t:'lead · understand and size', l:[
+    ['<span class="p">❯</span> /devteam:feature recurring invoices with email reminders', 400, true],
+    ['<span class="d">lead</span>  Reading CLAUDE.md → stack: Next.js + Supabase + Node', 380],
+    ['<span class="d">lead</span>  Touches 3 layers (data, API, web) + email → <span class="w">needs a team</span>', 380],
+    ['<span class="d">lead</span>  The request is vague on reminders. Asking for a brief.', 420],
+    ['<span class="k">●</span> <span class="w">product</span> writes docs/product/recurring-invoices.md', 380],
+    ['   <span class="d">AC1</span> monthly/quarterly/yearly frequency', 160],
+    ['   <span class="d">AC2</span> reminder 3 days before the due date', 160],
+    ['   <span class="d">AC3</span> pause/resume without losing history', 160],
+  ]},
+  {t:'architect · design', l:[
+    ['<span class="k">●</span> <span class="w">architect</span> exploring apps/api, supabase/migrations, apps/web', 420],
+    ['<span class="d">  approach</span> daily cron in the existing backend, no external queues', 380],
+    ['<span class="c">[CONTRACT]</span> table recurring_invoices(id, tenant_id, freq, next_run)', 300],
+    ['<span class="c">[CONTRACT]</span> POST /api/invoices/recurring  → 201 | 422', 300],
+    ['<span class="c">[CONTRACT]</span> env: RESEND_API_KEY', 300],
+    ['', 100],
+    ['<span class="d">task</span> T1 schema + RLS      <span class="c">Owner: data</span>     Files: supabase/migrations/**', 200],
+    ['<span class="d">task</span> T2 API + cron        <span class="b">Owner: backend</span>  Files: apps/api/recurring/**', 200],
+    ['<span class="d">task</span> T3 settings UI       <span class="g">Owner: frontend</span> Files: apps/web/billing/**', 200],
+    ['<span class="d">task</span> T4 contract tests     <span class="y">Owner: qa</span>       Files: e2e/recurring/**', 200],
+  ]},
+  {t:'lead → you · approval', l:[
+    ['<span class="d">lead</span>  <span class="w">Plan ready.</span>', 300],
+    ['   team      data · backend · frontend · qa  <span class="d">(+ security)</span>', 200],
+    ['   tasks     9, no shared files', 200],
+    ['   risks     <span class="o">migration on the invoices table</span>', 200],
+    ['             <span class="o">duplicate emails if the cron restarts</span> → idempotency key', 200],
+    ['   out       automatic payments (next iteration)', 300],
+    ['', 100],
+    ['<span class="y">  Proceed? You can also drop roles or switch models.</span>', 700],
+    ['<span class="p">❯</span> ok, go', 300, true],
+  ]},
+  {t:'team · parallel build', l:[
+    ['<span class="c">●</span> data      T1 migration 0042_recurring.sql …', 300],
+    ['<span class="b">●</span> backend   T2 route + scheduler …', 300],
+    ['<span class="g">●</span> frontend  T3 settings page …', 300],
+    ['<span class="y">●</span> qa        T4 writing tests from contracts …', 400],
+    ['<span class="c">[CONTRACT]</span> data → backend: added column paused_at', 380],
+    ['<span class="y">[QUESTION]</span> frontend → backend: next_run in UTC or tenant tz?', 380],
+    ['<span class="b">backend</span>   UTC, convert client-side with tenant.tz', 380],
+    ['<span class="r">[BLOCKER]</span>  qa → lead: demo tenant fixture missing', 380],
+    ['<span class="d">lead</span>      data, add the fixture to seed.sql', 380],
+    ['<span class="g">[HANDOFF]</span>  backend → qa: endpoints ready', 300],
+  ]},
+  {t:'hook · TaskCompleted + qa + security', l:[
+    ['<span class="d">gate</span>  T2 completed → running checks', 300],
+    ['      typecheck   <span class="g">✓</span>', 240],
+    ['      lint        <span class="g">✓</span>', 240],
+    ['      unit tests  <span class="r">✕ 1 failed</span>  recurring.test.ts:48', 360],
+    ['<span class="d">gate</span>  <span class="r">task reopened</span> → output sent to backend', 420],
+    ['<span class="b">backend</span>   fix off-by-one on next_run', 300],
+    ['      unit tests  <span class="g">✓</span>  → T2 closed', 400],
+    ['', 100],
+    ['<span class="y">qa</span>        AC1 <span class="g">PASS</span> · AC2 <span class="g">PASS</span> · AC3 <span class="g">PASS</span>   (evidence attached)', 380],
+    ['<span class="r">security</span>  RLS on recurring_invoices ✓ · no secrets in logs ✓', 380],
+  ]},
+  {t:'lead · summary', l:[
+    ['<span class="d">lead</span>  <span class="w">Done.</span>', 300],
+    ['   files     14 modified, 6 new', 200],
+    ['   commands  pnpm typecheck · pnpm test · pnpm e2e', 200],
+    ['   open      email template to review with growth', 200],
+    ['', 100],
+    ['   proposed commit:', 200],
+    ['   <span class="w">feat(billing): recurring invoices with email reminders</span>', 400],
+    ['', 100],
+    ['<span class="d">lead</span>  Team shut down. Commit, push and remote migration: <span class="o">yours.</span>', 400],
+  ]},
+];
+let flowTok = null, flowCur = -1;
+function showFlow(i){
+  if (i === flowCur) return; flowCur = i;
+  if (flowTok) flowTok.cancel = true; flowTok = {cancel:false};
+  $('#flow-title').textContent = FLOW[i].t;
+  $$('.step').forEach((s, k) => s.classList.toggle('active', k === i));
+  play($('#flow-term'), FLOW[i].l, flowTok);
+}
+const stepIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) showFlow(+e.target.dataset.i); }), {rootMargin:'-45% 0px -45% 0px'});
+$$('.step').forEach(s => stepIO.observe(s));
+$$('.step').forEach(s => s.addEventListener('click', () => showFlow(+s.dataset.i)));
+addEventListener('scroll', () => {
+  const st = $('#steps'), r = st.getBoundingClientRect();
+  const p = Math.max(0, Math.min(1, (innerHeight * .5 - r.top) / r.height));
+  $('#steps-progress').style.height = (p * (r.height - 20)) + 'px';
+}, {passive:true});
+const flowStart = new IntersectionObserver(([e]) => { if (e.isIntersecting && flowCur < 0) showFlow(0); }, {threshold:.2});
+flowStart.observe($('#flusso'));
+
+/* ---------------- commands ---------------- */
+const CMDS = [
+  {c:'/devteam:setup', s:'once per machine', f:'1×', d:'<b>Prepares the machine.</b> Checks prerequisites, enables agent teams in <code class="inline-code">~/.claude/settings.json</code>, lets you choose the display mode (in-process or tmux panes) and proposes a conservative allow-list of read-only commands. Every change is shown to you as a diff.', l:[
+    ['<span class="p">❯</span> /devteam:setup', 300, true],
+    ['<span class="d">check</span> claude --version  2.1.325 <span class="g">✓</span>', 220],
+    ['<span class="d">check</span> jq 1.7 <span class="g">✓</span>   tmux 3.4 <span class="g">✓</span>', 220],
+    ['', 80],
+    ['<span class="d">~/.claude/settings.json</span>', 160],
+    ['<span class="g">+  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" }</span>', 260],
+    ['<span class="y">  Display mode? [in-process] / auto (tmux, iTerm2)</span>', 420],
+    ['<span class="p">❯</span> auto', 260, true],
+    ['<span class="g">+  "teammateMode": "auto"</span>', 220],
+    ['<span class="g">+  "permissions.allow": ["Bash(git status:*)", "Bash(pnpm test:*)", …]</span>', 300],
+    ['', 80],
+    ['<span class="w">Done.</span> Restart Claude Code, then /devteam:onboard in every project.', 200],
+  ]},
+  {c:'/devteam:onboard', s:'once per project', f:'1×', d:'<b>Teaches the repo to the team.</b> Read-only analysis of manifests, workspaces, existing scripts, conventions and sensitive areas. Proposes the <code class="inline-code">## DevTeam</code> section for <code class="inline-code">CLAUDE.md</code> and the gate <code class="inline-code">checks</code>; after your ok it writes them and verifies every check passes.', l:[
+    ['<span class="p">❯</span> /devteam:onboard', 300, true],
+    ['<span class="d">scan</span>  package.json · pnpm-lock.yaml · supabase/config.toml', 220],
+    ['<span class="d">scan</span>  apps/web (Next.js 15) · apps/api (Hono) · Dockerfile', 220],
+    ['<span class="d">scan</span>  git log -30 → conventional commits', 220],
+    ['<span class="d">scan</span>  sensitive areas: auth/, webhooks/stripe, prompts/', 300],
+    ['', 80],
+    ['<span class="w">Proposal</span>  CLAUDE.md → ## DevTeam (stack, commands, ownership map)', 220],
+    ['          .claude/devteam.json → typecheck, lint, unit tests', 360],
+    ['<span class="p">❯</span> ok', 240, true],
+    ['<span class="d">verify</span> pnpm typecheck <span class="g">✓</span>  pnpm lint <span class="g">✓</span>  pnpm test <span class="g">✓</span>', 300],
+    ['<span class="w">Ready.</span> Commit both files: the whole team gets the same context.', 200],
+  ]},
+  {c:'/devteam:feature', s:'the full flow', f:'daily', d:'<b>The heart of the plugin.</b> Design → <b>your approval</b> → parallel build → QA/security → summary. The flow is told step by step <a href="#flusso" style="color:var(--cyan)">above</a>. Requires agent teams: local or Remote Control.', l:[
+    ['<span class="p">❯</span> /devteam:feature magic link login', 300, true],
+    ['<span class="d">lead</span>  team: architect → backend · frontend · qa · <span class="r">security</span> (auth!)', 300],
+    ['<span class="k">●</span> architect  contracts + 6 tasks', 300],
+    ['<span class="y">  Proceed? (y/n)</span>', 500],
+    ['<span class="p">❯</span> y', 240, true],
+    ['<span class="b">●</span> backend <span class="g">●</span> frontend <span class="y">●</span> qa  in parallel…', 400],
+    ['<span class="d">gate</span>  ✓ ✓ ✓', 260],
+    ['<span class="y">qa</span>        <span class="g">PASS</span> 5/5', 260],
+    ['<span class="r">security</span>  single-use token ✓  15 min expiry ✓  rate limit ✓', 300],
+    ['<span class="d">lead</span>  Proposed commit: <span class="w">feat(auth): magic link login</span>', 200],
+  ]},
+  {c:'/devteam:review', s:'[branch | PR]', f:'every PR', d:'<b>Three different eyes, one list.</b> security, qa and architect review the changes independently, then <b>challenge each other\'s findings</b>. The lead returns one deduplicated, prioritized list. Read-only. If the diff is tiny, the lead does it alone.', l:[
+    ['<span class="p">❯</span> /devteam:review feat/magic-link', 300, true],
+    ['<span class="d">scope</span> 23 files, +612 −88 vs main', 260],
+    ['<span class="r">●</span> security  <span class="y">●</span> qa  <span class="k">●</span> architect   <span class="d">independent</span>', 400],
+    ['<span class="y">qa</span>        runs the suite: 142 tests <span class="g">✓</span>', 300],
+    ['<span class="r">security</span>  "the token is in the debug logs"', 300],
+    ['<span class="k">architect</span> confirmed: logger.debug(req.query) in auth.ts:31', 300],
+    ['<span class="y">qa</span>        disputing "expiry test missing": it exists, line 88', 300],
+    ['', 80],
+    ['<span class="w">Report</span>  <span class="r">1 high</span> · <span class="o">2 medium</span> · 3 low   <span class="d">(1 finding dropped)</span>', 200],
+  ]},
+  {c:'/devteam:debug', s:'<bug>', f:'when needed', d:'<b>Competing hypotheses.</b> The lead gathers the facts and forms 3–5 hypotheses across different layers. Each investigator pursues one and <b>tries to disprove the others\' theories</b>, until one cause survives with a reproduction. No fix without your ok.', l:[
+    ['<span class="p">❯</span> /devteam:debug some tenants see other tenants\' invoices', 300, true],
+    ['<span class="d">facts</span> since yesterday 6pm · prod only · last deploy 5:40pm', 300],
+    ['<span class="d">H1</span> RLS   <span class="d">H2</span> cache API   <span class="d">H3</span> client state   <span class="d">H4</span> join SQL', 360],
+    ['<span class="c">data</span>      H1: policies intact, retried with 2 tenants → <span class="r">refuted</span>', 360],
+    ['<span class="g">frontend</span>  H3: store cleared on logout → <span class="r">refuted</span>', 360],
+    ['<span class="b">backend</span>   H2: cache key without tenant_id since commit a1f3…', 360],
+    ['<span class="c">data</span>      trying to disprove it… reproduced. <span class="g">confirmed</span>', 360],
+    ['', 80],
+    ['<span class="w">Cause</span>  shared cache key · <span class="w">Fix</span> 1 line + test · <span class="r">High urgency</span>', 200],
+  ]},
+  {c:'/devteam:release', s:'<app version>', f:'every release', d:'<b>Through the stores without rejections.</b> store drives readiness, listings, privacy labels and Data safety, IAP, TestFlight and rollout; mobile/ios fix the blockers; growth writes the store copy; qa verifies the build on reviewer-critical flows. Ends with a <b>submission checklist you execute</b>.', l:[
+    ['<span class="p">❯</span> /devteam:release Fattura 2.4.0', 300, true],
+    ['<span class="c">store</span>     iOS + Android readiness…', 300],
+    ['          <span class="r">✕</span> NSCameraUsageDescription missing', 220],
+    ['          <span class="r">✕</span> account deletion not reachable', 220],
+    ['<span class="g">mobile</span>    fixes both in app.config.ts and settings/', 300],
+    ['<span class="o">growth</span>    new screenshot captions + ASO keywords', 300],
+    ['<span class="y">qa</span>        demo login ✓ purchase/restore ✓ offline ✓', 300],
+    ['', 80],
+    ['<span class="w">Submission checklist</span> 11 items → eas submit <span class="d">(you run it)</span>', 200],
+  ]},
+  {c:'/devteam:strategy', s:'<idea>', f:'before building', d:'<b>An idea evaluated as a business.</b> product, growth and architect work together and <b>push back on each other</b>: growth challenges an MVP that won\'t sell, architect a scope too expensive to build, product a price that doesn\'t match the pain. Every number is marked <em>assumption</em> or <em>data</em>.', l:[
+    ['<span class="p">❯</span> /devteam:strategy voice agent for restaurant bookings', 300, true],
+    ['<span class="k">●</span> product <span class="o">●</span> growth <span class="k">●</span> architect', 340],
+    ['<span class="o">growth</span>    3 competitors, €49–149/month <span class="d">(data, with sources)</span>', 300],
+    ['<span class="k">architect</span> voice cost ~€0.09/min <span class="d">(assumption)</span> → margin ok above €79', 320],
+    ['<span class="o">growth</span>    challenges the MVP: without a TheFork integration it won\'t sell', 320],
+    ['<span class="k">product</span>   ok, integration in, multi-language out', 320],
+    ['', 80],
+    ['<span class="w">Recommendation</span>  <span class="g">GO WITH CHANGES</span>', 260],
+    ['<span class="d">validation</span> landing + pre-sale to 10 restaurants before writing code', 200],
+  ]},
+];
+const list = $('#cmd-list'); let cmdTok = null;
+list.innerHTML = CMDS.map((c, i) => `<button class="cmd-btn${i === 2 ? ' on' : ''}" data-i="${i}"><span class="freq">${c.f}</span><code>${c.c}</code><small>${esc(c.s)}</small></button>`).join('');
+function showCmd(i){
+  $$('.cmd-btn').forEach((b, k) => b.classList.toggle('on', k === i));
+  $('#cmd-desc').innerHTML = CMDS[i].d; $('#cmd-title').textContent = CMDS[i].c;
+  if (cmdTok) cmdTok.cancel = true; cmdTok = {cancel:false};
+  play($('#cmd-term'), CMDS[i].l, cmdTok);
+}
+$$('.cmd-btn').forEach(b => b.onclick = () => showCmd(+b.dataset.i));
+let cmdStarted = false;
+new IntersectionObserver(([e]) => { if (e.isIntersecting && !cmdStarted) { cmdStarted = true; showCmd(2); } }, {threshold:.3}).observe($('#comandi'));
+
+/* ---------------- config explain ---------------- */
+const EXP = {
+  gate:{
+    _default:'gateTasks',
+    gateTasks:['Quality gate','Turns on the automatic check when each implementation task is closed. If the project is "red" to begin with, the gate will block everything: fix it first or set this to <code class="inline-code">false</code> temporarily.','true'],
+    requireTaskOwnership:['Mandatory ownership','Every task created inside a team must declare <code class="inline-code">Owner:</code>, <code class="inline-code">Files:</code> and <code class="inline-code">Acceptance:</code>. That\'s what stops two agents from editing the same file.','true'],
+    checkTimeoutSeconds:['Check timeout','How many seconds the checks may take in total before the gate gives up. 600 = 10 minutes. If you need more, you\'re probably putting something in the gate that qa should run.','600'],
+    skipGatePattern:['Exempt tasks','Regex on the task title: those starting with review, plan, design, research, investigate, analyze, verify, document or explore produce no code and skip the checks (and only require <code class="inline-code">Owner:</code>).','regex'],
+    checks:['The checks','Ordered list of commands to run. If one fails, the task stays open and the agent gets the error output to fix it. <b>Only fast, reliable checks</b>: typecheck, lint, unit tests. qa runs the e2e tests.','array'],
+    name:['Check name','Readable label shown in the gate messages and in the output sent to the agent.','string'],
+    run:['Command','The shell command, run from the repo root. Use the scripts already defined in the project: <code class="inline-code">/devteam:onboard</code> never invents any.','string'],
+    guard:['Bash guardrail','Blocking irreversible commands applies to every session where the plugin is active. <code class="inline-code">false</code> turns it off for this project; for a single session use the <code class="inline-code">DEVTEAM_GUARD=0</code> variable.','true'],
+  },
+  claudemd:{
+    _default:'section',
+    section:['The DevTeam section','Generated by <code class="inline-code">/devteam:onboard</code> in the project\'s <code class="inline-code">CLAUDE.md</code>. <b>Every teammate loads it</b>: keep it short. It\'s the only shared context, because teammates don\'t see the lead\'s conversation.'],
+    stack:['Stack','Runtime, framework, data, client, deploy, package manager (never mix them). Lets agents pick the right stack skill.'],
+    commands:['Commands','Install, dev, typecheck, lint, test, e2e, build, local migrations, DB type generation. Only commands that really exist in the repo.'],
+    conventions:['Conventions','Folder structure, error handling, naming, commit style. Agents follow what\'s there instead of imposing their own taste.'],
+    ownership:['Ownership map','Glob → role. The architect uses it to assign files to tasks, so no file has two owners. Adapt it to your repo\'s real structure.'],
+    sensitive:['Sensitive areas','Anything going through here <b>always</b> gets a security review: auth, payments and webhooks, tenant isolation, LLM prompts and tools.'],
+    never:['Never without you','The list of actions the team never takes alone. The guardrail already blocks the technical ones; here you also write the business ones (new paid services, DNS…).'],
+  },
+  settings:{
+    _default:'agentteams',
+    env:['User environment variables','A plugin can\'t set environment variables, so <code class="inline-code">/devteam:setup</code> writes them into your <code class="inline-code">~/.claude/settings.json</code>, showing you the diff.'],
+    agentteams:['Agent teams','Claude Code agent teams are experimental and off by default. With <code class="inline-code">"1"</code> teammates can talk to each other via mailbox and task list. After the change: <b>restart Claude Code</b>. For a single project you can set it back to <code class="inline-code">"0"</code> in <code class="inline-code">.claude/settings.local.json</code>.'],
+    teammateMode:['Display mode','<b>in-process</b> (default): everything in one terminal, ↑/↓ to pick a teammate, works everywhere including remote. <b>auto</b>: split panes when inside tmux or iTerm2, otherwise in-process.'],
+    permissions:['Fewer permission prompts','Teammates\' permission prompts bubble up to the lead. An allow-list cuts the interruptions.'],
+    allow:['Safe commands only','Read-only and tests, nothing else. <b>Never</b> push, deploy, <code class="inline-code">rm</code>, database resets or production commands in the allow-list.'],
+    ekm:['Marketplace for the cloud','In cloud sessions you don\'t install plugins by hand: you declare them in the <b>project\'s</b> <code class="inline-code">.claude/settings.json</code>, committed. The repo is public, no credentials.'],
+    enabledPlugins:['Plugin enabled','Enables DevTeam for anyone who opens the project, in the cloud or locally. In the cloud agents run as single subagents.'],
+  },
+  models:{
+    _default:'m_model',
+    m_name:['Role name','Becomes the agent type <code class="inline-code">devteam:&lt;name&gt;</code>, which the lead uses to launch the teammate or you mention to use it as a subagent.'],
+    m_desc:['When to use it','The description tells Claude when to call this agent. Precise, with a single responsibility.'],
+    m_model:['The model','<b>opus</b> for product, growth, architect, qa, security. <b>sonnet</b> for the implementers and the Claude platform role. Change it here, or ask the lead for a specific model when it launches the team.'],
+    m_effort:['Effort','How much reasoning the model puts in. Every role is set to <code class="inline-code">high</code>: they\'re senior, they think before acting.'],
+    m_color:['Color','The teammate\'s color in the agents panel, to see at a glance who\'s talking.'],
+    m_body:['The prompt','Who it is, what it does, what it doesn\'t, how it works. Every role includes the <b>Team protocol</b> section with the <code class="inline-code">[CONTRACT]</code> <code class="inline-code">[QUESTION]</code> <code class="inline-code">[BLOCKER]</code> <code class="inline-code">[HANDOFF]</code> messages: copy it when you add a role.'],
+  },
+};
+function bindExplain(pane){
+  const box = $('#explain-' + pane), keys = $$('#json-' + pane + ' .key');
+  const show = k => {
+    const e = EXP[pane][k]; if (!e) return;
+    keys.forEach(x => x.classList.toggle('on', x.dataset.k === k));
+    box.innerHTML = `<div class="k">${esc(k.replace(/^m_/, ''))}${e[2] ? ' <span style="color:var(--dim)">· ' + e[2] + '</span>' : ''}</div><h4>${e[0]}</h4><p>${e[1]}</p><div class="hint">↖ hover the keys on the left</div>`;
+    box.animate && !RM && box.animate([{opacity:.3, transform:'translateY(6px)'}, {opacity:1, transform:'none'}], {duration:300, easing:'ease-out'});
+  };
+  keys.forEach(x => { x.addEventListener('mouseenter', () => show(x.dataset.k)); x.addEventListener('click', () => show(x.dataset.k)); });
+  show(EXP[pane]._default);
+}
+['gate','claudemd','settings','models'].forEach(bindExplain);
+function openTab(t){
+  $$('.cfg-tab').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  $$('.cfg-pane').forEach(p => p.classList.toggle('on', p.dataset.p === t));
+}
+$$('.cfg-tab').forEach(b => b.onclick = () => openTab(b.dataset.t));
+$$('[data-goto]').forEach(a => a.addEventListener('click', () => { openTab(a.dataset.goto); if (EXP.settings) setTimeout(() => { const k = $('#json-settings [data-k="ekm"]'); k && k.dispatchEvent(new Event('mouseenter')); }, 50); }));
+
+/* ---------------- guard terminal ---------------- */
+const BLOCKED = ['git push --force','git reset --hard','git clean -f','git stash','git checkout -- .','rm -rf ~','supabase db push','DROP DATABASE','docker volume rm','ssh / scp / rsync','npm publish','eas submit','fastlane deliver / pilot / supply','xcrun altool --upload'];
+$('#blocked-list').innerHTML = '<span style="color:var(--muted);font-size:14.5px;margin-right:6px;align-self:center">Blocked:</span>' + BLOCKED.map(b => `<code>${esc(b)}</code>`).join('');
+const GUARD = [
+  ['<span class="p">$</span> pnpm test -- recurring', 300, true],
+  ['  <span class="allowed">OK</span> <span class="d">executed · 18 tests passed</span>', 700],
+  ['<span class="p">$</span> git stash', 300, true],
+  ['  <span class="blocked">BLOCKED</span> <span class="r">would wipe the other teammates\' uncommitted work</span>', 900],
+  ['<span class="p">$</span> git diff --stat', 300, true],
+  ['  <span class="allowed">OK</span> <span class="d">executed</span>', 700],
+  ['<span class="p">$</span> supabase db push', 300, true],
+  ['  <span class="blocked">BLOCKED</span> <span class="r">migration on a remote DB → ask the human</span>', 900],
+  ['<span class="p">$</span> git push --force origin main', 300, true],
+  ['  <span class="blocked">BLOCKED</span> <span class="r">force push → goes through the product owner</span>', 900],
+  ['<span class="p">$</span> rm -rf ./*', 300, true],
+  ['  <span class="blocked">BLOCKED</span> <span class="r">rm -rf on a wildcard</span>', 900],
+  ['<span class="p">$</span> ssh deploy@vps "docker compose up -d"', 300, true],
+  ['  <span class="blocked">BLOCKED</span> <span class="r">production access → the human does it</span>', 900],
+  ['', 200],
+  ['<span class="d">hook PreToolUse · scripts/guard-bash.sh</span>', 3000],
+];
+let guardRunning = false;
+new IntersectionObserver(([e]) => {
+  if (e.isIntersecting && !guardRunning) { guardRunning = true; (async () => { while (true) { await play($('#guard-term'), GUARD); await sleep(1000); if (RM) break; } })(); }
+}, {threshold:.25}).observe($('#guard-term'));
+
+/* ---------------- team size meter ---------------- */
+const rng = $('#tm-range'), out = $('#tm-out'), bars = $('#tm-bars'), ver = $('#tm-verdict');
+bars.innerHTML = Array.from({length:14}, () => '<i></i>').join('');
+function upd(){
+  const n = +rng.value; out.textContent = n;
+  $$('i', bars).forEach((b, k) => { const on = k <= n; b.style.height = on ? (20 + (k / 13) * 80) + '%' : '12%'; b.style.background = !on ? 'var(--line2)' : n <= 2 ? 'var(--cyan)' : n <= 5 ? 'linear-gradient(var(--green),#15803d)' : n <= 8 ? 'var(--orange)' : 'var(--red)'; });
+  const tok = (n + 1);
+  ver.innerHTML = n <= 2 ? `<span class="c">~${tok}× the tokens of one session</span> · the lead alone, or a subagent, may be enough`
+    : n <= 5 ? `<span class="g">~${tok}× the tokens · the sweet spot for a feature</span>`
+    : n <= 8 ? `<span class="o">~${tok}× the tokens · only worth it for really big jobs</span>`
+    : `<span class="r">~${tok}× the tokens · too many: coordination > value. Split the feature.</span>`;
+}
+rng.oninput = upd; upd();
+
+/* ---------------- copy ---------------- */
+const toast = $('#toast');
+$$('.copy').forEach(b => b.addEventListener('click', async e => {
+  e.stopPropagation();
+  const t = b.dataset.copy.replace(/&#10;/g, '\n');
+  try { await navigator.clipboard.writeText(t); } catch { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  b.classList.add('ok'); b.textContent = '✓'; toast.classList.add('show');
+  setTimeout(() => { b.classList.remove('ok'); b.textContent = '⧉'; toast.classList.remove('show'); }, 1600);
+}));
+})();
+</script>
+</body>
+</html>
