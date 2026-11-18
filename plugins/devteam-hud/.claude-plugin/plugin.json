@@ -1,6 +1,6 @@
 {
   "name": "devteam-hud",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DevTeam HUD: team panel, plan-approval and blocker row, visible quality gates and guardrail, cost in the status line, /devteam-status, optional DevTeam look.",
   "author": { "name": "Davide Espertini", "url": "https://espertini.com" },
   "license": "MIT",
@@ -9,8 +9,7 @@
     "language": {
       "type": "string",
       "title": "Language",
-      "description": "Language of the panel, the row above the prompt and the cards.",
-      "options": ["it", "en"],
+      "description": "Language of the panel, the row above the prompt and the cards: \"it\" or \"en\".",
       "default": "it"
     },
     "autoOpen": {
