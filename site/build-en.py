@@ -251,7 +251,7 @@ P = [
 ("more:'Non scrive codice di produzione. Preferisce tecnologia noiosa e meno pezzi mobili. Ogni task: owner, file, dipendenze, criteri. Possiede <code>docs/design/**</code>.'","more:'Writes no production code. Prefers boring technology and fewer moving parts. Every task: owner, files, dependencies, criteria. Owns <code>docs/design/**</code>.'"),
 ("resp:'API, logica, integrazioni, voice agent (TS/Node, .NET).'","resp:'APIs, logic, integrations, voice agents (TS/Node, .NET).'"),
 ("more:'Implementa sui contratti dell\\'architect e li annuncia con <code>[CONTRACT]</code> quando cambiano. Possiede <code>apps/api/**</code>, <code>src/server/**</code>.'","more:'Implements against the architect\\'s contracts and announces changes with <code>[CONTRACT]</code>. Owns <code>apps/api/**</code>, <code>src/server/**</code>.'"),
-("resp:'Schema, migrazioni, RLS, pgvector, performance delle query.'","resp:'Schema, migrations, RLS, pgvector, query performance.'"),
+("resp:'Schema, migrazioni, RLS, SQL Server/EF Core, pgvector, performance delle query.'","resp:'Schema, migrations, RLS, SQL Server/EF Core, pgvector, query performance.'"),
 ("more:'Migrazioni solo in locale: <code>supabase db push</code> è bloccato dal guardrail. Possiede <code>supabase/migrations/**</code>.'","more:'Local migrations only: <code>supabase db push</code> is blocked by the guardrail. Owns <code>supabase/migrations/**</code>.'"),
 ("more:'Consuma i tipi condivisi e i contratti API. Possiede <code>apps/web/**</code>.'","more:'Consumes the shared types and API contracts. Owns <code>apps/web/**</code>.'"),
 ("resp:'Expo/React Native: app e giochi, EAS, push, acquisti in-app.'","resp:'Expo/React Native: apps and games, EAS, push, in-app purchases.'"),

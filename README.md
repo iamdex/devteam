@@ -17,7 +17,7 @@ Il team è generico e riusabile su tutti i progetti. Il contesto specifico di og
 | `growth` | `devteam:growth-strategist` | Opus | posizionamento, prezzi, go-to-market, funnel, copy, vendita alle PMI, ASO |
 | `architect` | `devteam:architect` | Opus | design, contratti tra layer, task con ownership dei file |
 | `backend` | `devteam:backend-engineer` | Sonnet | API, logica, integrazioni, voice agent (TS/Node, .NET) |
-| `data` | `devteam:data-engineer` | Sonnet | schema, migrazioni, RLS, pgvector, performance query |
+| `data` | `devteam:data-engineer` | Sonnet | schema, migrazioni, RLS, SQL Server/EF Core, pgvector, performance query |
 | `frontend` | `devteam:frontend-engineer` | Sonnet | web: React, Next.js, landing, dashboard, SEO |
 | `mobile` | `devteam:mobile-engineer` | Sonnet | Expo/React Native: app e giochi, EAS, push, acquisti in-app |
 | `ios` | `devteam:ios-engineer` | Sonnet | Swift/SwiftUI nativo iOS e macOS, StoreKit 2, moduli nativi per Expo |
@@ -162,9 +162,10 @@ plugins/devteam/
   agents/        13 ruoli senior (prompt, modello, tool)
   skills/        comandi (feature, review, debug, strategy, release, onboard, setup)
                  + conoscenza (definition-of-done, code-review-checklist,
-                   stack-typescript, stack-dotnet, stack-supabase,
-                   stack-react-web, stack-expo, stack-swiftui,
-                   stack-voice-agents, stack-docker-dokploy)
+                   porting-legacy, stack-typescript, stack-dotnet,
+                   stack-supabase, stack-sqlserver, stack-react-web,
+                   stack-expo, stack-swiftui, stack-voice-agents,
+                   stack-docker-dokploy)
   hooks/hooks.json
   scripts/       hook (bash + jq/python3/node)
   templates/     CLAUDE.devteam.md, devteam.json

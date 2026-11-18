@@ -24,7 +24,9 @@ Project-specific conventions in CLAUDE.md always win over this file. Match the t
 ## Data (EF Core)
 - Migrations generated with `dotnet ef migrations add`, reviewed by reading the generated SQL (`dotnet ef migrations script`) before applying.
 - `AsNoTracking()` for read-only queries; project to DTOs; avoid N+1 (check generated SQL for hot paths).
+- Raw SQL only parameterized: `FromSql`/`ExecuteSql` interpolated forms, or `FromSqlRaw` with parameters — never string concatenation.
 - Never `EnsureDeleted`/`EnsureCreated` outside tests.
+- SQL Server projects: `devteam:stack-sqlserver` has the full data-layer conventions (model configuration, migrations on live data, scaffolding a legacy database, indexes and plans, tenant isolation, testing).
 
 ## Logging
 - `ILogger<T>` with message templates (`"Order {OrderId} failed"`), not string interpolation. No secrets or PII.

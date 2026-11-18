@@ -907,11 +907,11 @@ claude --remote-control<button class="copy" data-copy="tmux new -s devteam&#10;c
   <span class="f">skills/</span>      <span class="d">comandi: feature, review, debug,</span>
                <span class="d">strategy, release, onboard, setup</span>
                <span class="d">+ conoscenza: definition-of-done,</span>
-               <span class="d">code-review-checklist, stack-typescript,</span>
-               <span class="d">stack-dotnet, stack-supabase,</span>
-               <span class="d">stack-react-web, stack-expo,</span>
-               <span class="d">stack-swiftui, stack-voice-agents,</span>
-               <span class="d">stack-docker-dokploy</span>
+               <span class="d">code-review-checklist, porting-legacy,</span>
+               <span class="d">stack-typescript, stack-dotnet,</span>
+               <span class="d">stack-supabase, stack-sqlserver,</span>
+               <span class="d">stack-react-web, stack-expo, stack-swiftui,</span>
+               <span class="d">stack-voice-agents, stack-docker-dokploy</span>
   <span class="f">hooks/hooks.json</span>
   <span class="f">scripts/</span>     <span class="d">hook (bash + jq/python3/node)</span>
   <span class="f">templates/</span>   <span class="d">CLAUDE.devteam.md, devteam.json</span>
@@ -991,7 +991,7 @@ const AGENTS = [
    resp:'API, logica, integrazioni, voice agent (TS/Node, .NET).',
    more:'Implementa sui contratti dell\'architect e li annuncia con <code>[CONTRACT]</code> quando cambiano. Possiede <code>apps/api/**</code>, <code>src/server/**</code>.'},
   {id:'data',type:'devteam:data-engineer',name:'Data engineer',model:'sonnet',color:'cyan',area:'build',ini:'DA',
-   resp:'Schema, migrazioni, RLS, pgvector, performance delle query.',
+   resp:'Schema, migrazioni, RLS, SQL Server/EF Core, pgvector, performance delle query.',
    more:'Migrazioni solo in locale: <code>supabase db push</code> è bloccato dal guardrail. Possiede <code>supabase/migrations/**</code>.'},
   {id:'frontend',type:'devteam:frontend-engineer',name:'Frontend engineer',model:'sonnet',color:'green',area:'build',ini:'FE',
    resp:'Web: React, Next.js, landing, dashboard, SEO.',

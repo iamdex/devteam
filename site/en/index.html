@@ -907,11 +907,11 @@ claude --remote-control<button class="copy" data-copy="tmux new -s devteam&#10;c
   <span class="f">skills/</span>      <span class="d">commands: feature, review, debug,</span>
                <span class="d">strategy, release, onboard, setup</span>
                <span class="d">+ knowledge: definition-of-done,</span>
-               <span class="d">code-review-checklist, stack-typescript,</span>
-               <span class="d">stack-dotnet, stack-supabase,</span>
-               <span class="d">stack-react-web, stack-expo,</span>
-               <span class="d">stack-swiftui, stack-voice-agents,</span>
-               <span class="d">stack-docker-dokploy</span>
+               <span class="d">code-review-checklist, porting-legacy,</span>
+               <span class="d">stack-typescript, stack-dotnet,</span>
+               <span class="d">stack-supabase, stack-sqlserver,</span>
+               <span class="d">stack-react-web, stack-expo, stack-swiftui,</span>
+               <span class="d">stack-voice-agents, stack-docker-dokploy</span>
   <span class="f">hooks/hooks.json</span>
   <span class="f">scripts/</span>     <span class="d">hook (bash + jq/python3/node)</span>
   <span class="f">templates/</span>   <span class="d">CLAUDE.devteam.md, devteam.json</span>
@@ -991,7 +991,7 @@ const AGENTS = [
    resp:'APIs, logic, integrations, voice agents (TS/Node, .NET).',
    more:'Implements against the architect\'s contracts and announces changes with <code>[CONTRACT]</code>. Owns <code>apps/api/**</code>, <code>src/server/**</code>.'},
   {id:'data',type:'devteam:data-engineer',name:'Data engineer',model:'sonnet',color:'cyan',area:'build',ini:'DA',
-   resp:'Schema, migrations, RLS, pgvector, query performance.',
+   resp:'Schema, migrations, RLS, SQL Server/EF Core, pgvector, query performance.',
    more:'Local migrations only: <code>supabase db push</code> is blocked by the guardrail. Owns <code>supabase/migrations/**</code>.'},
   {id:'frontend',type:'devteam:frontend-engineer',name:'Frontend engineer',model:'sonnet',color:'green',area:'build',ini:'FE',
    resp:'Web: React, Next.js, landing, dashboard, SEO.',

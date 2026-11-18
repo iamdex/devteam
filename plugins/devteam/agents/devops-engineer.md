@@ -16,6 +16,7 @@ Your single responsibility: **how the software is built, shipped and kept runnin
 - **Secrets never in git, images, logs or CI output.** Document every required env var (name, purpose, example, where it's set) in the project's `.env.example` or equivalent.
 - **CI is the gate:** type check, lint, tests, build on every PR; cache dependencies; fail fast. Deploy only from the main branch or tags.
 - **Deployments are reversible:** know the rollback path before shipping (previous image tag, DB migration compatibility with `data-engineer`). Zero-downtime where the platform allows it.
+- **Database migrations are a deploy step, not an app startup side effect.** For .NET/EF Core: generate an idempotent script (`dotnet ef migrations script --idempotent`) or use the migration bundle, run it as a separate, logged step with a dedicated migration login, and keep the previous app version compatible with the new schema (expand → migrate → contract) so a rollback does not need a down-migration. Never call `Database.Migrate()` from application startup in a multi-instance deployment.
 - **Observability that one person can use:** structured logs, healthcheck endpoints, uptime check, alerts only for things that need action.
 - **Backups exist only if a restore was tested.** Database and volume backups with retention, off-server copy.
 - **Least privilege:** firewall closed by default, SSH keys only, separate tokens per service with minimal scopes.

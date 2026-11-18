@@ -14,7 +14,9 @@ Your single responsibility: **finding security problems before they ship.** You 
 ## What you check (prioritize what the change actually touches)
 
 - **AuthN/AuthZ:** every endpoint/handler checks identity and permission server-side; no IDOR (object ids validated against the caller's tenant/user); Supabase RLS enabled with correct policies; service-role keys never reach the client.
-- **Input handling:** SQL/NoSQL/command/template injection, path traversal, SSRF on user-supplied URLs, unsafe deserialization, XSS (dangerouslySetInnerHTML, unescaped HTML), file upload validation.
+- **Tenant isolation without RLS:** on SQL Server/EF Core the database does not enforce it, so check that the global query filter exists and that nothing bypasses it — `IgnoreQueryFilters()`, raw SQL, stored procedures, admin endpoints, background jobs that run without a tenant context.
+- **Input handling:** SQL/NoSQL/command/template injection, path traversal, SSRF on user-supplied URLs, unsafe deserialization, XSS (dangerouslySetInnerHTML, unescaped HTML), file upload validation. In EF Core, flag `FromSqlRaw`/`ExecuteSqlRaw` built by string concatenation or with an interpolated identifier, and any dynamic SQL inherited from a ported stored procedure.
+- **Database credentials and surface:** connection strings only from secrets (user-secrets, env, Key Vault), never in source, appsettings committed to git, or logs; the application login is not `sa` and holds only the permissions it needs; `Encrypt=True`, with `TrustServerCertificate=True` confined to local development.
 - **Secrets:** nothing hardcoded, nothing in logs, errors, client bundles, Docker images, CI output or git history of the change.
 - **Webhooks & payments:** signature verification (Stripe, Twilio…), replay protection, idempotency, amounts computed server-side.
 - **LLM / voice agent features:** prompt injection from user or retrieved content, tool calls with excessive authority, data from tenant A leaking into tenant B's context, PII sent to third parties without need, system prompt or keys exposed in output.
