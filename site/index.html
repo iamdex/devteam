@@ -654,9 +654,9 @@ footer a:hover{color:var(--text)}
   <span class="key" data-k="skipGatePattern">"skipGatePattern"</span><span class="pn">:</span> <span class="str">"^(review|plan|design|research|</span>
 <span class="str">     investigate|analy[sz]e|verify|document|explore)\\b"</span><span class="pn">,</span>
   <span class="key" data-k="checks">"checks"</span><span class="pn">: [</span>
-    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"typecheck"</span><span class="pn">,</span>  <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm typecheck"</span> <span class="pn">},</span>
-    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"lint"</span><span class="pn">,</span>       <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm lint"</span> <span class="pn">},</span>
-    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"unit tests"</span><span class="pn">,</span> <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"pnpm test"</span> <span class="pn">}</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"typecheck"</span><span class="pn">,</span>  <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"bun run typecheck"</span> <span class="pn">},</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"lint"</span><span class="pn">,</span>       <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"bun run lint"</span> <span class="pn">},</span>
+    <span class="pn">{</span> <span class="key" data-k="name">"name"</span><span class="pn">:</span> <span class="str">"unit tests"</span><span class="pn">,</span> <span class="key" data-k="run">"run"</span><span class="pn">:</span> <span class="str">"bun test"</span> <span class="pn">}</span>
   <span class="pn">],</span>
   <span class="key" data-k="guard">"guard"</span><span class="pn">:</span> <span class="bool">true</span>  <span class="cm">// opzionale, default true</span>
 <span class="pn">}</span></div>
@@ -675,8 +675,8 @@ footer a:hover{color:var(--text)}
 - Deploy: <span class="str">Docker → Dokploy su VPS</span>
 
 <span class="key" data-k="commands">### Commands</span>
-| Typecheck | <span class="num">`pnpm typecheck`</span> |
-| Unit tests | <span class="num">`pnpm test`</span> |  <span class="cm">…</span>
+| Typecheck | <span class="num">`bun run typecheck`</span> |
+| Unit tests | <span class="num">`bun test`</span> |  <span class="cm">…</span>
 
 <span class="key" data-k="conventions">### Conventions</span>
 - <span class="str">struttura cartelle, errori, naming, commit</span>
@@ -705,8 +705,8 @@ footer a:hover{color:var(--text)}
   <span class="key" data-k="permissions">"permissions"</span><span class="pn">: {</span>
     <span class="key" data-k="allow">"allow"</span><span class="pn">: [</span>
       <span class="str">"Bash(git status:*)"</span><span class="pn">,</span> <span class="str">"Bash(git diff:*)"</span><span class="pn">,</span>
-      <span class="str">"Bash(git log:*)"</span><span class="pn">,</span>    <span class="str">"Bash(pnpm typecheck:*)"</span><span class="pn">,</span>
-      <span class="str">"Bash(pnpm lint:*)"</span><span class="pn">,</span>  <span class="str">"Bash(pnpm test:*)"</span><span class="pn">,</span>
+      <span class="str">"Bash(git log:*)"</span><span class="pn">,</span>    <span class="str">"Bash(bun run typecheck:*)"</span><span class="pn">,</span>
+      <span class="str">"Bash(bun run lint:*)"</span><span class="pn">,</span> <span class="str">"Bash(bun test:*)"</span><span class="pn">,</span>
       <span class="str">"Bash(dotnet build:*)"</span><span class="pn">,</span> <span class="str">"Bash(dotnet test:*)"</span>
     <span class="pn">]</span>
   <span class="pn">}</span>
@@ -1285,7 +1285,7 @@ const FLOW = [
   {t:'lead · riepilogo', l:[
     ['<span class="d">lead</span>  <span class="w">Fatto.</span>', 300],
     ['   file      14 modificati, 6 nuovi', 200],
-    ['   comandi   pnpm typecheck · pnpm test · pnpm e2e', 200],
+    ['   comandi   bun run typecheck · bun test · bun run e2e', 200],
     ['   aperto    template email da rivedere con growth', 200],
     ['', 100],
     ['   commit proposto:', 200],
@@ -1325,13 +1325,13 @@ const CMDS = [
     ['<span class="y">  Display mode? [in-process] / auto (tmux, iTerm2)</span>', 420],
     ['<span class="p">❯</span> auto', 260, true],
     ['<span class="g">+  "teammateMode": "auto"</span>', 220],
-    ['<span class="g">+  "permissions.allow": ["Bash(git status:*)", "Bash(pnpm test:*)", …]</span>', 300],
+    ['<span class="g">+  "permissions.allow": ["Bash(git status:*)", "Bash(bun test:*)", …]</span>', 300],
     ['', 80],
     ['<span class="w">Fatto.</span> Riavvia Claude Code, poi /devteam:onboard in ogni progetto.', 200],
   ]},
   {c:'/devteam:onboard', s:'una volta per progetto', f:'1×', d:'<b>Insegna il repo al team.</b> Analizza in sola lettura manifest, workspace, script esistenti, convenzioni e aree sensibili. Propone la sezione <code class="inline-code">## DevTeam</code> per <code class="inline-code">CLAUDE.md</code> e i <code class="inline-code">checks</code> del gate; dopo il tuo ok li scrive e verifica che ogni check passi.', l:[
     ['<span class="p">❯</span> /devteam:onboard', 300, true],
-    ['<span class="d">scan</span>  package.json · pnpm-lock.yaml · supabase/config.toml', 220],
+    ['<span class="d">scan</span>  package.json · bun.lock · supabase/config.toml', 220],
     ['<span class="d">scan</span>  apps/web (Next.js 15) · apps/api (Hono) · Dockerfile', 220],
     ['<span class="d">scan</span>  git log -30 → conventional commits', 220],
     ['<span class="d">scan</span>  aree sensibili: auth/, webhooks/stripe, prompts/', 300],
@@ -1339,7 +1339,7 @@ const CMDS = [
     ['<span class="w">Propongo</span>  CLAUDE.md → ## DevTeam (stack, comandi, ownership map)', 220],
     ['          .claude/devteam.json → typecheck, lint, unit tests', 360],
     ['<span class="p">❯</span> ok', 240, true],
-    ['<span class="d">verify</span> pnpm typecheck <span class="g">✓</span>  pnpm lint <span class="g">✓</span>  pnpm test <span class="g">✓</span>', 300],
+    ['<span class="d">verify</span> bun run typecheck <span class="g">✓</span>  bun run lint <span class="g">✓</span>  bun test <span class="g">✓</span>', 300],
     ['<span class="w">Pronto.</span> Committa i due file: tutto il team avrà lo stesso contesto.', 200],
   ]},
   {c:'/devteam:feature', s:'il flusso completo', f:'ogni giorno', d:'<b>Il cuore del plugin.</b> Design → <b>tua approvazione</b> → build in parallelo → QA/security → riepilogo. Il flusso è raccontato passo per passo <a href="#flusso" style="color:var(--cyan)">qui sopra</a>. Richiede gli agent teams: locale o Remote Control.', l:[
@@ -1477,7 +1477,7 @@ $$('[data-goto]').forEach(a => a.addEventListener('click', () => { openTab(a.dat
 const BLOCKED = ['git push --force','git reset --hard','git clean -f','git stash','git checkout -- .','rm -rf ~','supabase db push','DROP DATABASE','docker volume rm','ssh / scp / rsync','npm publish','eas submit','fastlane deliver / pilot / supply','xcrun altool --upload'];
 $('#blocked-list').innerHTML = '<span style="color:var(--muted);font-size:14.5px;margin-right:6px;align-self:center">Bloccati:</span>' + BLOCKED.map(b => `<code>${esc(b)}</code>`).join('');
 const GUARD = [
-  ['<span class="p">$</span> pnpm test -- recurring', 300, true],
+  ['<span class="p">$</span> bun test recurring', 300, true],
   ['  <span class="allowed">OK</span> <span class="d">eseguito · 18 test passati</span>', 700],
   ['<span class="p">$</span> git stash', 300, true],
   ['  <span class="blocked">BLOCCATO</span> <span class="r">cancellerebbe il lavoro non committato degli altri teammate</span>', 900],

@@ -327,7 +327,7 @@ P = [
 ("t:'lead · riepilogo'","t:'lead · summary'"),
 ("<span class=\"w\">Fatto.</span>', 300]","<span class=\"w\">Done.</span>', 300]"),
 ("   file      14 modificati, 6 nuovi","   files     14 modified, 6 new"),
-("   comandi   pnpm typecheck","   commands  pnpm typecheck"),
+("   comandi   bun run typecheck","   commands  bun run typecheck"),
 ("   aperto    template email da rivedere con growth","   open      email template to review with growth"),
 ("   commit proposto:","   proposed commit:"),
 ("Team chiuso. Commit, push e migrazione remota: <span class=\"o\">a te.</span>","Team shut down. Commit, push and remote migration: <span class=\"o\">yours.</span>"),
