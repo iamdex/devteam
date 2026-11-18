@@ -8,14 +8,14 @@
 - Data: <Supabase (Postgres + pgvector) / EF Core + Postgres / ...>
 - Client: <Next.js xx / Expo SDK xx + Expo Router / SwiftUI (iOS xx, macOS xx) / none>
 - Deploy: <Docker → Dokploy on VPS / ...>
-- Package manager: <pnpm/npm/...> (never mix)
+- Package manager: <bun/pnpm/npm — whatever the lockfile says> (never mix)
 
 ### Commands
 | Purpose | Command |
 | --- | --- |
 | Install | `<...>` |
 | Dev | `<...>` |
-| Typecheck | `<...>` |
+| Typecheck | `<...>` (.NET: none — the build is the type check) |
 | Lint | `<...>` |
 | Unit tests | `<...>` |
 | E2E tests | `<...>` |
@@ -33,8 +33,8 @@
 | --- | --- |
 | `docs/product/**` | product |
 | `docs/design/**` | architect |
-| `apps/api/**`, `src/server/**` | backend |
-| `supabase/migrations/**`, `supabase/seed.sql` | data |
+| `apps/api/**`, `src/server/**`, `src/Api/**`, `src/Application/**`, `src/Domain/**` | backend |
+| `supabase/migrations/**`, `supabase/seed.sql`, `**/Migrations/**`, `**/Persistence/Configurations/**` | data |
 | `apps/web/**` | frontend |
 | `apps/mobile/**` | mobile |
 | `apps/ios/**`, `modules/*/ios/**` | ios |

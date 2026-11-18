@@ -1,11 +1,12 @@
 {
+  "_note": "checks are a placeholder: /devteam:onboard replaces them with the commands this repo actually has. Node default is bun; use the project's package manager when a lockfile says otherwise. .NET: dotnet build -warnaserror / dotnet test. Keep only fast, reliable commands here — e2e belongs to QA.",
   "gateTasks": true,
   "requireTaskOwnership": true,
   "checkTimeoutSeconds": 600,
   "skipGatePattern": "^(review|plan|design|research|investigate|analy[sz]e|verify|document|explore)\\b",
   "checks": [
-    { "name": "typecheck", "run": "pnpm typecheck" },
-    { "name": "lint", "run": "pnpm lint" },
-    { "name": "unit tests", "run": "pnpm test" }
+    { "name": "typecheck", "run": "bun run typecheck" },
+    { "name": "lint", "run": "bun run lint" },
+    { "name": "unit tests", "run": "bun test" }
   ]
 }

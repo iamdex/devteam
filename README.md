@@ -135,9 +135,9 @@ Il guardrail vale per tutte le sessioni in cui il plugin è attivo. Si disattiva
   "checkTimeoutSeconds": 600,
   "skipGatePattern": "^(review|plan|design|research|investigate|analy[sz]e|verify|document|explore)\\b",
   "checks": [
-    { "name": "typecheck", "run": "pnpm typecheck" },
-    { "name": "lint", "run": "pnpm lint" },
-    { "name": "unit tests", "run": "pnpm test" }
+    { "name": "typecheck", "run": "bun run typecheck" },
+    { "name": "lint", "run": "bun run lint" },
+    { "name": "unit tests", "run": "bun test" }
   ]
 }
 ```

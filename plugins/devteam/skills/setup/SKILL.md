@@ -45,9 +45,10 @@ Teammates' permission prompts bubble up to the lead. Propose a conservative allo
 "permissions": {
   "allow": [
     "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
-    "Bash(npm run typecheck:*)", "Bash(npm run lint:*)", "Bash(npm test:*)",
+    "Bash(bun run typecheck:*)", "Bash(bun run lint:*)", "Bash(bun test:*)",
     "Bash(pnpm typecheck:*)", "Bash(pnpm lint:*)", "Bash(pnpm test:*)",
-    "Bash(dotnet build:*)", "Bash(dotnet test:*)"
+    "Bash(npm run typecheck:*)", "Bash(npm run lint:*)", "Bash(npm test:*)",
+    "Bash(dotnet build:*)", "Bash(dotnet test:*)", "Bash(dotnet format:*)"
   ]
 }
 ```
