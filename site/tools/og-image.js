@@ -26,7 +26,7 @@ p{font-size:25px;line-height:1.4;color:#9aa3b8}
 <div class="glow" style="width:620px;height:620px;background:#0891b2;right:-220px;bottom:-260px"></div>
 <div class="grid"></div>
 <svg width="1200" height="630" id="s"></svg>
-<div class="txt"><span class="pill"><b>v0.3.0</b>${t.tag} · agent teams</span><h1>${t.h}</h1><p>${t.s}</p></div>
+<div class="txt"><span class="pill"><b>v0.4.0</b>${t.tag} · agent teams</span><h1>${t.h}</h1><p>${t.s}</p></div>
 <div class="logo"><svg width="40" height="40" viewBox="0 0 64 64" style="position:static"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><circle cx="32" cy="32" r="7" fill="url(#lg)"/><circle cx="32" cy="32" r="21" fill="none" stroke="url(#lg)" stroke-width="3" stroke-dasharray="6 6"/><circle cx="53" cy="32" r="4" fill="#22d3ee"/><circle cx="14" cy="21" r="4" fill="#a78bfa"/><circle cx="22" cy="50" r="4" fill="#fb923c"/></svg>DevTeam</div>
 <div class="url">iamdex.github.io/devteam</div>
 <script>
